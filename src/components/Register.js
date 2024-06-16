@@ -18,7 +18,7 @@ function Register() {
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
-        Register
+        Registro
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -37,7 +37,7 @@ function Register() {
           margin="normal"
         />
         <Button variant="contained" color="primary" type="submit">
-          Register
+          Aceptar
         </Button>
       </form>
     </Container>
