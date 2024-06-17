@@ -16,6 +16,7 @@ import AddTutorial from "./components/AddTutorial";
 import EditTutorial from "./components/EditTutorial";
 import AddExercise from "./components/AddExercise";
 import EditExercise from "./components/EditExercise";
+import Categories from "./components/Categories";
 import TutorialDetails from "./components/TutorialDetails";
 import ExerciseDetails from "./components/ExerciseDetails";
 
@@ -73,6 +74,14 @@ function App() {
               </AdminRoute>
             }
           />
+          <Route
+            path="/categories"
+            element={
+              <AdminRoute>
+                <Categories />
+              </AdminRoute>
+            }
+            />
           <Route
             path="/exercises"
             element={
