@@ -1,0 +1,86 @@
+.container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .left-column {
+    width: 300px; /* Tamaño fijo para la columna izquierda */
+    background-color: #f5f5f5; /* background.paper equivalent */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+  }
+  
+  .right-column {
+    flex-grow: 1; /* La columna derecha ocupa el resto del espacio */
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-color: #f5f5f5; /* background.paper equivalent */
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
+  }
+  
+  .tutorial-button {
+    margin: 4px 0; /* Menos separación entre botones */
+    padding-left: 13px;
+    width: 100%;
+    background-color: #d3d3d3; /* Color de fondo más oscuro */
+    color: #000000; /* Letra negra */
+    box-shadow: none; /* Sin sombra */
+    height: 34px; /* Menos altura */
+    text-transform: none; /* Mantener el texto en minúsculas */
+    border-radius: 100px; /* Bordes redondeados */
+    justify-content: flex-start; /* Texto alineado a la izquierda */
+    overflow: hidden; /* Cortar texto que no cabe */
+    text-overflow: ellipsis; /* Mostrar puntos suspensivos para texto largo */
+    white-space: nowrap; /* Evitar que el texto se divida en varias líneas */
+    transition: background-color 0.3s ease, border 0.3s ease, margin 0.3s ease;
+    position: relative; /* Para colocar las flechas */
+  }
+  
+  .tutorial-button:hover {
+    background-color: #e0e0e0; /* background.default equivalent */
+  }
+  
+  .tutorial-button.active {
+    border: 2px;
+    background-color: #a5a5a5; /* Color de fondo más oscuro */
+    margin: 20px 0; /* Más separación entre los botones */
+    margin-left: 25px;
+  }
+  
+  .tutorial-content {
+    padding: 16px;
+    width: 100%;
+  }
+  
+  .no-tutorial-selected {
+    color: #888888; /* textSecondary equivalent */
+  }
+  
+  .arrow-buttons {
+    position: absolute;
+    left: -7px; /* Colocar las flechas fuera del botón */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  .arrow-buttons .arrow-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .arrow-buttons .arrow-button:hover {
+   color: #c3c615; /* background.default equivalent */
+  }
+
+  .arrow-buttons .arrow-button:focus {
+    outline: none;
+  }
