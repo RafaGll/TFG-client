@@ -26,7 +26,7 @@
   
   .tutorial-button {
     margin: 4px 0; /* Menos separación entre botones */
-    padding-left: 13px;
+    padding-left: 11px;
     width: 100%;
     background-color: #d3d3d3; /* Color de fondo más oscuro */
     color: #000000; /* Letra negra */
@@ -37,9 +37,11 @@
     justify-content: flex-start; /* Texto alineado a la izquierda */
     overflow: hidden; /* Cortar texto que no cabe */
     text-overflow: ellipsis; /* Mostrar puntos suspensivos para texto largo */
-    white-space: nowrap; /* Evitar que el texto se divida en varias líneas */
     transition: background-color 0.3s ease, border 0.3s ease, margin 0.3s ease;
-    position: relative; /* Para colocar las flechas */
+    display: flex; /* Flexbox para centrar contenido */
+    align-items: center; /* Centrar verticalmente */
+    cursor: pointer; /* Cambiar el cursor al pasar sobre el botón */
+    white-space: nowrap;
   }
   
   .tutorial-button:hover {
@@ -47,10 +49,9 @@
   }
   
   .tutorial-button.active {
-    border: 2px;
     background-color: #a5a5a5; /* Color de fondo más oscuro */
     margin: 20px 0; /* Más separación entre los botones */
-    margin-left: 25px;
+    margin-left: 21px;
   }
   
   .tutorial-content {
@@ -64,7 +65,7 @@
   
   .arrow-buttons {
     position: absolute;
-    left: -7px; /* Colocar las flechas fuera del botón */
+    left: -10px; /* Colocar las flechas fuera del botón */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -76,11 +77,11 @@
     border: none;
     cursor: pointer;
   }
-  
-  .arrow-buttons .arrow-button:hover {
-   color: #c3c615; /* background.default equivalent */
-  }
 
+  .arrow-buttons .arrow-button:hover {
+    color: #a8b213; /* background.default equivalent */
+  }
+  
   .arrow-buttons .arrow-button:focus {
     outline: none;
   }

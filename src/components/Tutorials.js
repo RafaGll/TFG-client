@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { Button, Typography, Box, IconButton } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Tutorials.css'; // Importar el archivo CSS
@@ -61,29 +61,26 @@ const Tutorials = () => {
           <Box key={tutorial._id} position="relative" width="100%">
             {user && user.role === 'admin' && selectedTutorial && selectedTutorial._id === tutorial._id && (
               <Box className="arrow-buttons">
-                <IconButton 
-                  size="small" 
+                <button 
                   className="arrow-button" 
                   onClick={() => handleMoveTutorial(tutorial, 'up')}
                 >
                   <ArrowUpward />
-                </IconButton>
-                <IconButton 
-                  size="small" 
+                </button>
+                <button 
                   className="arrow-button" 
                   onClick={() => handleMoveTutorial(tutorial, 'down')}
                 >
                   <ArrowDownward />
-                </IconButton>
+                </button>
               </Box>
             )}
-            <Button
-              variant="contained"
+            <div
               className={`tutorial-button ${selectedTutorial && selectedTutorial._id === tutorial._id ? 'active' : ''}`}
               onClick={() => handleSelectTutorial(tutorial)}
             >
               {tutorial.title}
-            </Button>
+            </div>
           </Box>
         ))}
       </Box>

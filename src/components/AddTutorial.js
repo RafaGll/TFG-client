@@ -1,20 +1,34 @@
-import React, { useState } from "react";
-import { Container, TextField, Button, Typography, Paper } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Container, TextField, Button, Typography, Paper, MenuItem } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const AddTutorial = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [level, setLevel] = useState("");
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/categories");
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await axios.post("http://localhost:3000/tutorials", {
       title,
       content,
-      level,
+      category,
     });
     navigate("/tutorials");
   };
@@ -39,14 +53,22 @@ const AddTutorial = () => {
             onChange={(e) => setContent(e.target.value)}
             fullWidth
             margin="normal"
+            multiline
           />
           <TextField
-            label="Nivel"
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
+            select
+            label="Categoría"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
-          />
+          >
+            {categories.map((cat) => (
+              <MenuItem key={cat._id} value={cat._id}>
+                {cat.name}
+              </MenuItem>
+            ))}
+          </TextField>
           <Button
             variant="contained"
             color="primary"
