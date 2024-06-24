@@ -103,7 +103,7 @@ const Categories = () => {
   );
 
   return (
-    <Container maxWidth="lg" style={{ marginTop: "2rem" }}>
+    <Container className="category-container"maxWidth="lg" style={{ marginTop: "2rem" }}>
       <Box display="flex" justifyContent="space-between">
         {/* Columna de Estructuras de Datos */}
         <Paper
