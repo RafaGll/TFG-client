@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
@@ -20,23 +20,13 @@ const defaultTheme = createTheme();
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordMatch, setPasswordMatch] = useState(true);
-  const [formValid, setFormValid] = useState(false);
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setPasswordMatch(password === confirmPassword);
-    setFormValid(username !== "" && password !== "" && confirmPassword !== "" && password === confirmPassword);
-  }, [username, password, confirmPassword]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formValid) {
-      await register(username, password);
-      navigate("/");
-    }
+    await register(username, password);
+    navigate("/");
   };
 
   return (
@@ -112,27 +102,12 @@ function Register() {
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  error={!passwordMatch}
-                />
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  id="confirmPassword"
-                  autoComplete="current-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  error={!passwordMatch}
-                  helperText={!passwordMatch && "Las contraseñas no coinciden."}
                 />
                 <Button
                   type="submit"
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
-                  disabled={!formValid}
                 >
                   Aceptar
                 </Button>

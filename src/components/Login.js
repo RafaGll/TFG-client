@@ -70,7 +70,7 @@ function Login() {
           <Box sx={{ position: "relative", height: "100%" }}>
             <IconButton
               sx={{ color: "black", fontSize: "large" }}
-            href="/"
+              onClick={() => navigate(-1)}
             >
               <ArrowBackIcon style={{ fontSize: "large" }} />
             </IconButton>
