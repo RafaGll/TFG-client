@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import api from "../api";
 import { jwtDecode } from "jwt-decode"; // Asegúrate de que jwtDecode esté correctamente importado
-
+const baseURL = process.env.REACT_APP_API_URL;
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const res = await api.post("http://localhost:3000/auth/login", {
+      const res = await api.post(`${baseURL}/auth/login`, {
         username,
         password,
       });
@@ -56,7 +56,7 @@ const AuthProvider = ({ children }) => {
 
   const register = async (username, password) => {
     try {
-      const res = await api.post("http://localhost:3000/auth/register", {
+      const res = await api.post(`${baseURL}/auth/register`, {
         username,
         password,
       });
