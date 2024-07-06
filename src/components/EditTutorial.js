@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import api from "../api"; 
+import api from "../api";
 import "../styles/AddTutorial.css";
 import {
   Container,
@@ -31,7 +31,38 @@ import {
   Separator,
   BlockTypeSelect,
   CodeToggle,
+  codeBlockPlugin,
+  InsertCodeBlock,
+  sandpackPlugin,
+  codeMirrorPlugin
 } from "@mdxeditor/editor";
+
+const defaultSnippetContent = `
+export default function App() {
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+    </div>
+  );
+}
+`.trim();
+
+const simpleSandpackConfig = {
+  defaultPreset: 'react',
+  presets: [
+    {
+      label: 'React',
+      name: 'react',
+      meta: 'live react',
+      sandpackTemplate: 'react',
+      sandpackTheme: 'light',
+      snippetFileName: '/App.js',
+      snippetLanguage: 'jsx',
+      initialSnippetContent: defaultSnippetContent
+    },
+  ]
+};
 
 const EditTutorial = () => {
   const { id } = useParams();
@@ -153,6 +184,44 @@ const EditTutorial = () => {
               linkPlugin(),
               quotePlugin(),
               markdownShortcutPlugin(),
+              codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+              sandpackPlugin({ sandpackConfig: simpleSandpackConfig }),
+              codeMirrorPlugin({
+                codeBlockLanguages: {
+                  js: 'JavaScript',
+                  css: 'CSS',
+                  html: 'HTML',
+                  python: 'Python',
+                  java: 'Java',
+                  cpp: 'C++',
+                },
+                extensions: [
+                  (view) => {
+                    return {
+                      props: {
+                        handleDOMEvents: {
+                          keydown: (view, event) => {
+                            if (event.key === "Tab") {
+                              event.preventDefault();
+                              const { state, dispatch } = view;
+                              if (state.selection.ranges.some((range) => !range.empty)) {
+                                dispatch(state.update(state.replaceSelection("\t")));
+                              } else {
+                                const transaction = state.update({
+                                  changes: { from: state.selection.main.head, insert: "\t" }
+                                });
+                                dispatch(transaction);
+                              }
+                              return true;
+                            }
+                            return false;
+                          }
+                        }
+                      }
+                    };
+                  }
+                ]
+              }),
               toolbarPlugin({
                 toolbarContents: () => (
                   <>
@@ -166,6 +235,7 @@ const EditTutorial = () => {
                     <InsertImage />
                     <Separator />
                     <CodeToggle />
+                    <InsertCodeBlock />
                   </>
                 ),
               }),
