@@ -1,0 +1,37 @@
+/* Estilos específicos para AddTutorial */
+.add-tutorial-container {
+  margin-top: 65px;
+  background-color: transparent;
+  height: calc(100vh - 65px);
+  padding: 0;
+  overflow: scroll;
+
+  padding: 10px;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.add-tutorial-container::-webkit-scrollbar {
+  display: none;
+}
+
+
+.add-tutorial-paper {
+padding: 5px 20px;
+}
+
+.add-tutorial-editor {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.add-tutorial-button {
+  align-self: flex-end;
+}
+
+/* Estilo para los campos obligatorios */
+.MuiTextField-root label.MuiInputLabel-root::after {
+  content: " *";
+  color: red;
+}

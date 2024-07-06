@@ -6,7 +6,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <Container maxWidth="lg" style={{ marginTop: "2rem" }}>
+    <Container maxWidth="lg" style={{ marginTop: "70px" }}>
       <Paper elevation={3} style={{ padding: "2rem" }}>
         <Typography variant="h3" gutterBottom>
           Bienvenido a la Plataforma de Aprendizaje

@@ -1,19 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { Container, TextField, Button, Typography, Paper, MenuItem } from "@mui/material";
-import axios from "axios";
+import React, { useState, useEffect, useRef } from "react";
+import api from "../api"; 
+import {
+  Container,
+  TextField,
+  Button,
+  MenuItem,
+  Paper,
+  Box,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ContentTutorial from "./ContentTutorial";
+import "../styles/AddTutorial.css"; 
 
 const AddTutorial = () => {
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const navigate = useNavigate();
+  const baseURL = process.env.REACT_APP_API_URL;
+  const contentTutorialRef = useRef();
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/categories");
+        const response = await api.get(`${baseURL}/categories`);
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -21,39 +33,39 @@ const AddTutorial = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [baseURL]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:3000/tutorials", {
+    const contentFromEditor = contentTutorialRef.current.getContent();
+    await api.post(`${baseURL}/tutorials`, {
       title,
-      content,
+      content: contentFromEditor,
       category,
     });
     navigate("/tutorials");
   };
 
+  useEffect(() => {
+    const contentFromEditor = contentTutorialRef.current?.getContent();
+    if (title && category && contentFromEditor) {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
+    }
+  }, [title, category, contentTutorialRef.current?.getContent()]);
+
   return (
-    <Container maxWidth="sm" style={{ marginTop: "2rem" }}>
-      <Paper elevation={3} style={{ padding: "1rem" }}>
-        <Typography variant="h4" gutterBottom>
-          Añadir Nuevo Tutorial
-        </Typography>
-        <form onSubmit={handleSubmit}>
+    <Container maxWidth="lg" className="add-tutorial-container">
+      <Paper elevation={3} className="add-tutorial-paper">
+        <Box display="flex" justifyContent="space-between" marginBottom={2}>
           <TextField
             label="Título"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             fullWidth
             margin="normal"
-          />
-          <TextField
-            label="Contenido"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            fullWidth
-            margin="normal"
-            multiline
+            style={{ marginRight: "1rem" }}
           />
           <TextField
             select
@@ -62,6 +74,7 @@ const AddTutorial = () => {
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
+            style={{ marginLeft: "1rem" }}
           >
             {categories.map((cat) => (
               <MenuItem key={cat._id} value={cat._id}>
@@ -69,15 +82,19 @@ const AddTutorial = () => {
               </MenuItem>
             ))}
           </TextField>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            style={{ marginTop: "1rem" }}
-          >
-            Añadir
-          </Button>
-        </form>
+        </Box>
+        <Box className="add-tutorial-editor">
+          <ContentTutorial ref={contentTutorialRef} />
+        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          className="add-tutorial-button"
+          disabled={isButtonDisabled}
+        >
+          Añadir
+        </Button>
       </Paper>
     </Container>
   );

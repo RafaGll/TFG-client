@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode"; // Importa jwtDecode correctamente con llaves
+import api from "../api";
+import { jwtDecode } from "jwt-decode"; // Asegúrate de que jwtDecode esté correctamente importado
 
 const AuthContext = createContext();
 
@@ -27,38 +27,46 @@ const AuthProvider = ({ children }) => {
       try {
         const decoded = jwtDecode(authToken);
         setUser(decoded.user);
-        axios.defaults.headers.common["x-auth-token"] = authToken;
+        api.defaults.headers.common["Authorization"] = `Bearer ${authToken}`;
       } catch (error) {
         console.error("Invalid token:", error);
         setUser(null);
       }
     } else {
-      delete axios.defaults.headers.common["x-auth-token"];
+      delete api.defaults.headers.common["Authorization"];
     }
-    console.log("authToken:", authToken);
-    console.log("user:", user);
   }, [authToken]);
 
   const login = async (username, password) => {
-    const res = await axios.post("http://localhost:3000/auth/login", {
-      username,
-      password,
-    });
-    setAuthToken(res.data.token);
-    localStorage.setItem("authToken", res.data.token);
-    const decoded = jwtDecode(res.data.token);
-    setUser(decoded.user);
+    try {
+      const res = await api.post("http://localhost:3000/auth/login", {
+        username,
+        password,
+      });
+      setAuthToken(res.data.token);
+      localStorage.setItem("authToken", res.data.token);
+      const decoded = jwtDecode(res.data.token);
+      setUser(decoded.user);
+      console.log("User logged in:", decoded.user);
+      console.log("Token:", res.data.token);
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
   };
 
   const register = async (username, password) => {
-    const res = await axios.post("http://localhost:3000/auth/register", {
-      username,
-      password,
-    });
-    setAuthToken(res.data.token);
-    localStorage.setItem("authToken", res.data.token);
-    const decoded = jwtDecode(res.data.token);
-    setUser(decoded.user);
+    try {
+      const res = await api.post("http://localhost:3000/auth/register", {
+        username,
+        password,
+      });
+      setAuthToken(res.data.token);
+      localStorage.setItem("authToken", res.data.token);
+      const decoded = jwtDecode(res.data.token);
+      setUser(decoded.user);
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
   };
 
   const logout = () => {

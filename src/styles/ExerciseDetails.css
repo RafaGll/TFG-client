@@ -1,0 +1,66 @@
+.container-exercise {
+  height: 100vh;
+  overflow: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.container-exercise::-webkit-scrollbar {
+  display: none; /* Ocultar scrollbars en Webkit (Chrome, Safari) */
+}
+
+.paper-exercise {
+  margin-top: -10px;
+  margin-bottom: 20px;
+  padding: 15px 30px;
+  background-color: rgba(240, 248, 255, 0.609);
+}
+
+.answer-button{
+  /* background-color: #a1d6e93f !important; */
+  border: 1px solid #74847e80 !important;
+  border-radius: 10px !important;
+  color: black !important;
+  font-weight: bold !important;
+}
+
+.answer-button:hover{
+  background-color: rgba(222, 185, 37, 0.215) !important;
+  color: #b99502 !important;
+  border: 2px solid #74847e80 !important;
+  margin: -1px !important;
+}
+.wrong-answer-button{
+  border: 1.5px solid rgba(255, 0, 0, 0.4) !important;
+  color: rgba(109, 0, 0, 0.787) !important;
+}
+.correct-answer-button{
+  border: 2px solid rgba(47, 194, 47, 0.7) !important;
+  color: rgb(0, 112, 0) !important;
+}
+
+.group-exercises {
+  overflow:scroll;
+}
+.group-exercises::-webkit-scrollbar{
+  display: none;
+}
+
+
+/* AddExercise */
+.add-exercise-container {
+  margin-top: 65px;
+  background-color: transparent;
+  height: calc(100vh - 65px);
+  padding: 0;
+  overflow: scroll ;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.add-exercise-container::-webkit-scrollbar {
+  display: none; /* Ocultar scrollbars en Webkit (Chrome, Safari) */
+}
+
+.add-exercise-paper {
+  padding: 15px 20px;
+  margin: 10px 0;
+}

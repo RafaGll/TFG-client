@@ -1,7 +1,21 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Container, TextField, Button, Typography } from "@mui/material";
+import {
+  Button,
+  CssBaseline,
+  TextField,
+  Link,
+  Paper,
+  Box,
+  Grid,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const defaultTheme = createTheme();
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -16,31 +30,115 @@ function Register() {
   };
 
   return (
-    <Container>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Registro
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          fullWidth
-          margin="normal"
+    <ThemeProvider theme={defaultTheme}>
+      <Grid
+        container
+        component="main"
+        sx={{
+          height: "100vh",
+          padding: "80px 150px",
+          backgroundColor: "#FFFAE5",
+        }}
+      >
+        <CssBaseline />
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={5}
+          component={Paper}
+          elevation={24}
+          square
+        >
+          <Box sx={{ position: "relative", height: "100%" }}>
+            <IconButton
+              sx={{ color: "black", fontSize: "large" }}
+              onClick={() => navigate(-1)}
+            >
+              <ArrowBackIcon style={{ fontSize: "large" }} />
+            </IconButton>
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src="/icon2.png"
+                alt="App Logo"
+                style={{ width: 150, height: 150, cursor: "pointer" }}
+                onClick={() => navigate("/")}
+              />
+              <Typography component="h1" variant="h5">
+                Registro
+              </Typography>
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit}
+                sx={{ mt: 1 }}
+              >
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
+                  autoFocus
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Aceptar
+                </Button>
+                <Grid container justifyContent="center">
+                  <Grid item>
+                    <Link href="/login" variant="body2">
+                      {"¿Ya tienes una cuenta? Inicia sesión"}
+                    </Link>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage: 'url("/login.jpg")',
+            backgroundColor: (t) =>
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         />
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <Button variant="contained" color="primary" type="submit">
-          Aceptar
-        </Button>
-      </form>
-    </Container>
+      </Grid>
+    </ThemeProvider>
   );
 }
 

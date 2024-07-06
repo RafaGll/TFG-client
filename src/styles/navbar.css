@@ -1,0 +1,46 @@
+/* navbar.css */
+.navbar-appbar {
+  background-color: white !important;
+  border-bottom: 1px solid black !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  color: black !important;
+
+  /* padding-left: 0 !important;
+  padding-right: 0 !important; */
+}
+
+.navbar-link {
+  display: flex;
+  align-items: center;
+  color: #000000;
+  text-decoration: none;
+  margin-right: 40px;
+}
+
+.navbar-link:hover {
+  text-decoration: none;
+}
+
+.navbar-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: -8px;
+  margin-top: -8px;
+  margin-left: 25px;
+}
+
+.navbar-button {
+  margin: 0 10px;
+  border-radius: 8px;
+  color: #000000;
+  font-weight: bold !important;
+  transition: background-color 0.2s, color 0.2s;
+  padding: 8px 10px;
+}
+
+.navbar-button:hover {
+  background-color: rgba(144, 120, 23, 0.545);
+  color: #b99502;
+}
+

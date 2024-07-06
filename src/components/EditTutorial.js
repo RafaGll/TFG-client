@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Button, Typography, Paper } from "@mui/material";
-import axios from "axios";
+import api from "../api";
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditTutorial = () => {
@@ -9,10 +9,11 @@ const EditTutorial = () => {
   const [content, setContent] = useState("");
   const [level, setLevel] = useState("");
   const navigate = useNavigate();
+  const baseURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchTutorial = async () => {
-      const res = await axios.get(`http://localhost:3000/tutorials/${id}`);
+      const res = await api.get(`${baseURL}/tutorials/${id}`);
       setTitle(res.data.title);
       setContent(res.data.content);
       setLevel(res.data.level);
@@ -22,7 +23,7 @@ const EditTutorial = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.patch(`http://localhost:3000/tutorials/${id}`, {
+    await api.patch(`${baseURL}/tutorials/${id}`, {
       title,
       content,
       level,

@@ -1,8 +1,26 @@
 .category-container {
-  padding: 2rem;
+  height: calc(100vh - 50px);
+  margin-top: 65px;
+  overflow: scroll;
+  padding: 15px 0;
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.category-container::-webkit-scrollbar {
+  display: none; /* Ocultar scrollbars en Webkit (Chrome, Safari) */
 }
 
-.category-column {
+.paper-edit-column {
+  padding: 5px 15px;
+  flex: 1;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+
+
+/* .category-column {
   padding: 1rem;
   flex: 1;
 }
@@ -27,4 +45,4 @@
 
 .category-item button {
   margin-left: 10px;
-}
+} */

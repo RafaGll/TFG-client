@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api";
 import {
   IconButton,
   TextField,
@@ -18,11 +18,12 @@ const Categories = () => {
   const [editCategoryName, setEditCategoryName] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryType, setNewCategoryType] = useState("");
+  const baseURL = process.env.REACT_APP_API_URL;
 
   // Función para obtener todas las categorías del backend
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/categories");
+      const response = await api.get(`${baseURL}/categories`);
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -43,7 +44,7 @@ const Categories = () => {
   // Función para manejar el guardado de una categoría editada
   const handleSaveClick = async (id) => {
     try {
-      await axios.patch(`http://localhost:3000/categories/${id}`, {
+      await api.patch(`${baseURL}/categories/${id}`, {
         name: editCategoryName,
       });
       setEditCategoryId(null);
@@ -57,16 +58,14 @@ const Categories = () => {
   // Función para manejar el clic en el botón de eliminar
   const handleDeleteClick = async (id) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:3000/categories/${id}`
-      );
+      const response = await api.delete(`${baseURL}/categories/${id}`);
       console.log(response.data); // Información de depuración
       fetchCategories(); // Actualizar la lista de categorías
     } catch (error) {
       console.error("Error deleting category:", error);
       if (error.response && error.response.status === 400) {
         window.alert(
-          "No se puede eliminar la categoría porque hay tutoriales asociados."
+          "No se puede eliminar la categoría porque hay tutoriales o ejercicios asociados."
         );
       } else {
         window.alert("Error eliminando la categoría.");
@@ -82,7 +81,7 @@ const Categories = () => {
   // Función para manejar el guardado de una nueva categoría
   const handleAddSaveClick = async () => {
     try {
-      await axios.post("http://localhost:3000/categories", {
+      await api.post(`${baseURL}/categories`, {
         name: newCategoryName,
         type: newCategoryType,
       });
@@ -103,18 +102,14 @@ const Categories = () => {
   );
 
   return (
-    <Container className="category-container"maxWidth="lg" style={{ marginTop: "2rem" }}>
-      <Box display="flex" justifyContent="space-between">
+    <Container className="category-container" maxWidth="lg">
+      <Box display="flex">
         {/* Columna de Estructuras de Datos */}
-        <Paper
-          elevation={3}
-          style={{ padding: "1rem", flex: 1, marginRight: "1rem" }}
-        >
+        <Paper elevation={3} className="paper-edit-column">
           <Box
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            marginBottom={2}
           >
             <Typography variant="h5">Estructuras de Datos</Typography>
             <IconButton
@@ -124,14 +119,14 @@ const Categories = () => {
               <Add />
             </IconButton>
           </Box>
-          <ul style={{ listStyleType: "none", padding: 0 }}>
+          <ul style={{ listStyleType: "none", padding: "5px" }}>
             {dataStructures.map((category) => (
               <li
                 key={category._id}
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  marginBottom: "8px",
+                  marginBottom: "3px",
                 }}
               >
                 {editCategoryId === category._id ? (
@@ -158,7 +153,6 @@ const Categories = () => {
                 <IconButton
                   color="error"
                   onClick={() => handleDeleteClick(category._id)}
-                  style={{ marginLeft: "10px" }}
                 >
                   <Delete />
                 </IconButton>
@@ -169,7 +163,6 @@ const Categories = () => {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  marginBottom: "8px",
                 }}
               >
                 <TextField
@@ -191,15 +184,11 @@ const Categories = () => {
         </Paper>
 
         {/* Columna de Algoritmos */}
-        <Paper
-          elevation={3}
-          style={{ padding: "1rem", flex: 1, marginLeft: "1rem" }}
-        >
+        <Paper elevation={3} className="paper-edit-column">
           <Box
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            marginBottom={2}
           >
             <Typography variant="h5">Algoritmos</Typography>
             <IconButton
@@ -216,7 +205,7 @@ const Categories = () => {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  marginBottom: "8px",
+                  marginBottom: "3px",
                 }}
               >
                 {editCategoryId === category._id ? (
@@ -243,7 +232,6 @@ const Categories = () => {
                 <IconButton
                   color="error"
                   onClick={() => handleDeleteClick(category._id)}
-                  style={{ marginLeft: "10px" }}
                 >
                   <Delete />
                 </IconButton>
@@ -254,7 +242,6 @@ const Categories = () => {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  marginBottom: "8px",
                 }}
               >
                 <TextField

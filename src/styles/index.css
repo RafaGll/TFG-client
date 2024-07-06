@@ -1,0 +1,32 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background-color: #fffae5;
+  font-family: "inter", "Roboto", sans-serif;
+  overflow: hidden;
+}
+* {
+  box-sizing: border-box;
+}
+
+/* body {
+  overflow-y: scroll;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-top: 1px;
+  font-family: "inter", "Roboto", sans-serif;
+} */
+
+/* body {
+  overflow: auto;
+  overflow-y: auto;
+  margin: 1000px;
+    padding: 1000px;
+    border: 1000px;
+    font-family: "inter", "Roboto", sans-serif;
+    width: 90%;
+    height: 90%;
+    overflow: hidden; 
+} */

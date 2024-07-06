@@ -1,66 +1,189 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Container, Typography, Grid, Paper, Button } from "@mui/material";
-import axios from "axios";
+import { Container, Typography, Grid, Box, ButtonGroup } from "@mui/material";
+import api from "../api";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import "../styles/Exercises.css";
 
 const Exercises = () => {
+  const [categories, setCategories] = useState([]);
+  const [startedCategories, setStartedCategories] = useState([]);
   const [exercises, setExercises] = useState([]);
   const { user } = useContext(AuthContext);
+  const baseURL = process.env.REACT_APP_API_URL;
+  const [selectedType, setSelectedType] = useState("Estructura de datos"); // Default to 'Estructura de datos'
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchExercises = async () => {
-      const res = await axios.get("http://localhost:3000/exercises");
-      setExercises(res.data);
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get(`${baseURL}/categories`);
+        setCategories(res.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
     };
+
+    fetchCategories();
+  }, [baseURL]);
+
+  useEffect(() => {
+    const fetchStartedCategories = async () => {
+      try {
+        const res = await api.get(`${baseURL}/users/progress`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Utiliza el token de autenticación almacenado
+          },
+        });
+        setStartedCategories(res.data);
+      } catch (error) {
+        console.error("Error fetching started categories:", error);
+      }
+    };
+
+    fetchStartedCategories();
+  }, [baseURL]);
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      try {
+        const res = await api.get(`${baseURL}/exercises/total`);
+        setExercises(res.data);
+      } catch (error) {
+        console.error("Error fetching exercises:", error);
+      }
+    };
+
     fetchExercises();
-  }, []);
+  }, [baseURL]);
+
+  const handleCategoryFilter = (type) => {
+    setSelectedType(type);
+  };
+
+  const handleCategoryClick = async (categoryId) => {
+    try {
+      const res = await api.get(`${baseURL}/exercises/next/${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+      const nextExercise = res.data;
+
+      if (nextExercise) {
+        navigate(`/exercises/${nextExercise._id}`);
+      } else {
+        alert("No more exercises in this category.");
+      }
+    } catch (error) {
+      console.error("Error fetching next exercise:", error);
+    }
+  };
 
   return (
-    <Container maxWidth="lg" style={{ marginTop: "2rem" }}>
-      <Typography variant="h4" gutterBottom>
-        Ejercicios
-      </Typography>
-      {user && user.role === "admin" && (
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginBottom: "1rem" }}
-          onClick={() => navigate("/add-exercise")}
+    <Box className="exercises-page">
+      <Container
+        className="exercises-container"
+        sx={{ gridRow: "1", gridColumn: "span 3" }}
+      >
+        <Typography variant="h4" gutterBottom>
+          Actividades
+        </Typography>
+        <Box className="category-filters">
+          <button
+            className={`filter-button ${
+              selectedType === "Estructura de datos" ? "selected" : ""
+            }`}
+            onClick={() => handleCategoryFilter("Estructura de datos")}
+          >
+            Estructuras de datos
+          </button>
+          <button
+            className={`filter-button ${
+              selectedType === "Algoritmo" ? "selected" : ""
+            }`}
+            onClick={() => handleCategoryFilter("Algoritmo")}
+          >
+            Algoritmos
+          </button>
+        </Box>
+        <Grid
+          sx={{
+            display: "grid",
+            columnGap: 3,
+            rowGap: 1,
+            gridTemplateColumns: "repeat(2, 1fr)",
+          }}
         >
-          Añadir Ejercicio
-        </Button>
-      )}
-      <Grid container spacing={3}>
-        {exercises.map((exercise) => (
-          <Grid item xs={12} sm={6} md={4} key={exercise._id}>
-            <Paper elevation={3} style={{ padding: "1rem" }}>
-              <Typography variant="h6">{exercise.title}</Typography>
-              <Typography variant="body2">{exercise.level}</Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginTop: "1rem" }}
-                onClick={() => navigate(`/exercises/${exercise._id}`)}
-              >
-                Ver más
-              </Button>
-              {user && user.role === "admin" && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  style={{ marginTop: "1rem", marginLeft: "1rem" }}
-                  onClick={() => navigate(`/edit-exercise/${exercise._id}`)}
+          {categories.length > 0 ? (
+            categories
+              .filter((c) => c.type === selectedType)
+              .map((category) => (
+                <button
+                  className="select-category"
+                  key={category._id}
+                  onClick={() => handleCategoryClick(category._id)}
                 >
-                  Editar
-                </Button>
-              )}
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+                  <Typography className="button-text" variant="h6">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    {category.name}
+                  </Typography>
+                </button>
+              ))
+          ) : (
+            <Typography>No hay categorías</Typography>
+          )}
+        </Grid>
+      </Container>
+      <Container
+        className="user-box"
+        sx={{ gridRow: "1", gridColumn: "4 / 5", overflowX: "scroll" }}
+      >
+        <Typography variant="h5" gutterBottom>
+          Mi Progreso
+        </Typography>
+        <ButtonGroup orientation="vertical" sx={{ display: "grid" }}>
+          {startedCategories.length > 0 ? (
+            startedCategories.map((cat) => {
+              const completedExercises = cat.completed.length;
+              const categoryExercises = exercises.find(
+                (e) => e.categoryId === cat.category
+              );
+              const totalExercises = categoryExercises
+                ? categoryExercises.count
+                : 0;
+              const initialPercentage =
+                (completedExercises / totalExercises) * 100;
+              const widthPercentage =
+                initialPercentage > 10 ? initialPercentage : 10;
+
+              return (
+                <Grid
+                  sx={{ display: "grid", gridAutoColumns: "1" }}
+                  key={cat._id}
+                >
+                  <button
+                    className="user-select-category"
+                    onClick={() => handleCategoryClick(cat.category)}
+                    style={{ "--completed-width": `${widthPercentage}%` }}
+                  >
+                    <Typography className="button-text" variant="body1">
+                      {categories.find((c) => c._id === cat.category)?.name ||
+                        "Categoría no encontrada"}
+                    </Typography>
+                  </button>
+                </Grid>
+              );
+            })
+          ) : (
+            <Typography>No has empezado a trabajar</Typography>
+          )}
+        </ButtonGroup>
+      </Container>
+    </Box>
   );
 };
 
