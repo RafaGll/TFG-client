@@ -6,10 +6,10 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <Container maxWidth="lg" style={{ marginTop: "70px" }}>
-      <Paper elevation={3} style={{ padding: "2rem" }}>
+    <Container maxWidth="lg" style={{ height: "calc(100vh - 65px" }}>
+      <Paper elevation={3} style={{ marginTop: "75px", padding:"10px 15px" }}>
         <Typography variant="h3" gutterBottom>
-          Bienvenido a la Plataforma de Aprendizaje
+          Bienvenido
         </Typography>
         <Typography variant="h6" paragraph>
           Aprende estructuras de datos y algoritmos con tutoriales interactivos
