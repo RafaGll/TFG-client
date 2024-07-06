@@ -8,12 +8,18 @@ import {
   ArrowDownward,
 } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { AuthContext } from "../context/AuthContext";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import "../styles/Tutorials.css";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import {
+  materialDark,
+  materialLight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useNavigate } from "react-router-dom";
+import "../styles/Tutorials.css";
 
 const Tutorials = () => {
   const [tutorials, setTutorials] = useState([]);
@@ -21,6 +27,7 @@ const Tutorials = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedTutorial, setSelectedTutorial] = useState(null);
   const [expandedTypes, setExpandedTypes] = useState({});
+  const [isDark, setIsDark] = useState(true); // Estado para cambiar entre temas claro y oscuro
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
@@ -39,10 +46,9 @@ const Tutorials = () => {
       try {
         const response = await api.get(`${baseURL}/categories`);
         setCategories(response.data);
-        // Inicializar el estado expandido de los tipos de categorías
         const types = response.data.reduce((acc, category) => {
           if (!acc[category.type]) {
-            acc[category.type] = true; // Puedes establecerlo en false si quieres que empiece contraído
+            acc[category.type] = true;
           }
           return acc;
         }, {});
@@ -75,6 +81,23 @@ const Tutorials = () => {
   const handleEditTutorial = () => {
     if (selectedTutorial) {
       navigate(`/edit-tutorial/${selectedTutorial._id}`);
+    }
+  };
+
+  const handleDeleteTutorial = async () => {
+    if (selectedTutorial) {
+      const confirmDelete = window.confirm(
+        "¿Estás seguro de que quieres eliminar este tutorial?"
+      );
+      if (confirmDelete) {
+        try {
+          await api.delete(`${baseURL}/tutorials/${selectedTutorial._id}`);
+          setTutorials(tutorials.filter((t) => t._id !== selectedTutorial._id));
+          setSelectedTutorial(null);
+        } catch (error) {
+          console.error("Error deleting tutorial", error);
+        }
+      }
     }
   };
 
@@ -125,17 +148,27 @@ const Tutorials = () => {
   return (
     <Box className="container-tutorial">
       {user && user.role === "admin" && selectedTutorial && (
-        <Fab
-          color="secondary"
-          size="small"
-          aria-label="edit"
-          style={{ position: "absolute", right: "5px", top: "70px" }}
-          onClick={handleEditTutorial}
-        >
-          <EditIcon />
-        </Fab>
+        <>
+          <Fab
+            color="error"
+            size="small"
+            aria-label="delete"
+            style={{ position: "absolute", right: "5px", top: "70px" }}
+            onClick={handleDeleteTutorial}
+          >
+            <DeleteIcon />
+          </Fab>
+          <Fab
+            color="secondary"
+            size="small"
+            aria-label="edit"
+            style={{ position: "absolute", right: "50px", top: "70px" }}
+            onClick={handleEditTutorial}
+          >
+            <EditIcon />
+          </Fab>
+        </>
       )}
-      {/* Columna izquierda */}
       <Box className="left-column">
         {Object.entries(
           categories.reduce((acc, category) => {
@@ -177,7 +210,7 @@ const Tutorials = () => {
                   {selectedCategory === category._id &&
                     tutorials
                       .filter((tutorial) => tutorial.category === category._id)
-                      .sort((a, b) => a.order - b.order) // Ordenar tutoriales por el campo de orden
+                      .sort((a, b) => a.order - b.order)
                       .map((tutorial) => (
                         <Box key={tutorial._id} className="tutorial-item">
                           {user &&
@@ -222,7 +255,6 @@ const Tutorials = () => {
         ))}
       </Box>
 
-      {/* Columna derecha */}
       <Box className="right-column">
         {selectedTutorial ? (
           <Box className="tutorial-content">
@@ -232,6 +264,25 @@ const Tutorials = () => {
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}
+              components={{
+                code({ node, inline, className, children, ...props }) {
+                  const match = /language-(\w+)/.exec(className || "");
+                  return !inline && match ? (
+                    <SyntaxHighlighter
+                      style={isDark ? materialDark : materialLight}
+                      language={match[1]}
+                      PreTag="div"
+                      {...props}
+                    >
+                      {String(children).replace(/\n$/, "")}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                },
+              }}
             >
               {selectedTutorial.content}
             </ReactMarkdown>

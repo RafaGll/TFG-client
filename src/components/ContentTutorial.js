@@ -1,4 +1,9 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState } from "react";
+import React, {
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+} from "react";
 import api from "../api";
 import "@mdxeditor/editor/style.css";
 import {
@@ -20,7 +25,38 @@ import {
   Separator,
   BlockTypeSelect,
   CodeToggle,
+  codeBlockPlugin,
+  InsertCodeBlock,
+  sandpackPlugin,
+  codeMirrorPlugin,
 } from "@mdxeditor/editor";
+
+const defaultSnippetContent = `
+export default function App() {
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+    </div>
+  );
+}
+`.trim();
+
+const simpleSandpackConfig = {
+  defaultPreset: "react",
+  presets: [
+    {
+      label: "React",
+      name: "react",
+      meta: "live react",
+      sandpackTemplate: "react",
+      sandpackTheme: "light",
+      snippetFileName: "/App.js",
+      snippetLanguage: "jsx",
+      initialSnippetContent: defaultSnippetContent,
+    },
+  ],
+};
 
 const ContentTutorial = forwardRef((props, ref) => {
   const [content, setContent] = useState("Hello world");
@@ -65,6 +101,19 @@ const ContentTutorial = forwardRef((props, ref) => {
         linkPlugin(),
         quotePlugin(),
         markdownShortcutPlugin(),
+        codeBlockPlugin({ defaultCodeBlockLanguage: "js" }),
+        sandpackPlugin({ sandpackConfig: simpleSandpackConfig }),
+        codeMirrorPlugin({
+          codeBlockLanguages: {
+            js: "JavaScript",
+            css: "CSS",
+            html: "HTML",
+            python: "Python",
+            java: "Java",
+            cpp: "C++",
+          },
+          handleTab: true, // Ensure tab key works within code blocks
+        }),
         toolbarPlugin({
           toolbarContents: () => (
             <>
@@ -78,6 +127,8 @@ const ContentTutorial = forwardRef((props, ref) => {
               <InsertImage />
               <Separator />
               <CodeToggle />
+              <InsertCodeBlock />
+              {/* Add additional buttons as needed */}
             </>
           ),
         }),
