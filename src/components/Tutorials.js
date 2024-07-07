@@ -272,6 +272,7 @@ const Tutorials = () => {
                       style={isDark ? materialDark : materialLight}
                       language={match[1]}
                       PreTag="div"
+                      className="syntax-highlighter"
                       {...props}
                     >
                       {String(children).replace(/\n$/, "")}
