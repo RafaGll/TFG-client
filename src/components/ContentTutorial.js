@@ -32,6 +32,7 @@ import {
   StrikeThroughSupSubToggles,
   ListsToggle,
 } from "@mdxeditor/editor";
+import "../styles/AddTutorial.css";
 
 const defaultSnippetContent = `
 export default function App() {

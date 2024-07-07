@@ -128,32 +128,7 @@ const EditTutorial = () => {
   return (
     <Container maxWidth="lg" className="add-tutorial-container">
       <Paper elevation={3} className="add-tutorial-paper">
-        <Box display="flex" justifyContent="space-between" marginBottom={2}>
-          <TextField
-            label="Título"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            fullWidth
-            margin="normal"
-            style={{ marginRight: "1rem" }}
-          />
-          <TextField
-            select
-            label="Categoría"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            fullWidth
-            margin="normal"
-            style={{ marginLeft: "1rem" }}
-          >
-            {categories.map((cat) => (
-              <MenuItem key={cat._id} value={cat._id}>
-                {cat.name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Box>
-        <Box className="add-tutorial-editor">
+        <Box className="add-tutorial-editor" marginBottom={"-20px"}>
           <MDXEditor
             markdown={content}
             onChange={setContent}
@@ -187,7 +162,6 @@ const EditTutorial = () => {
               linkDialogPlugin(),
               headingsPlugin(),
               listsPlugin(),
-              linkPlugin(),
               quotePlugin(),
               markdownShortcutPlugin(),
               codeBlockPlugin({ defaultCodeBlockLanguage: "js" }),
@@ -201,41 +175,6 @@ const EditTutorial = () => {
                   java: "Java",
                   cpp: "C++",
                 },
-                extensions: [
-                  (view) => {
-                    return {
-                      props: {
-                        handleDOMEvents: {
-                          keydown: (view, event) => {
-                            if (event.key === "Tab") {
-                              event.preventDefault();
-                              const { state, dispatch } = view;
-                              if (
-                                state.selection.ranges.some(
-                                  (range) => !range.empty
-                                )
-                              ) {
-                                dispatch(
-                                  state.update(state.replaceSelection("\t"))
-                                );
-                              } else {
-                                const transaction = state.update({
-                                  changes: {
-                                    from: state.selection.main.head,
-                                    insert: "\t",
-                                  },
-                                });
-                                dispatch(transaction);
-                              }
-                              return true;
-                            }
-                            return false;
-                          },
-                        },
-                      },
-                    };
-                  },
-                ],
               }),
               toolbarPlugin({
                 toolbarContents: () => (
@@ -261,6 +200,33 @@ const EditTutorial = () => {
             ]}
           />
         </Box>
+        <hr></hr>
+        <Box display="flex" justifyContent="space-between" marginBottom={2}>
+          <TextField
+            label="Título"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            fullWidth
+            margin="normal"
+            style={{ marginRight: "1rem" }}
+          />
+          <TextField
+            select
+            label="Categoría"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            fullWidth
+            margin="normal"
+            style={{ marginLeft: "1rem" }}
+          >
+            {categories.map((cat) => (
+              <MenuItem key={cat._id} value={cat._id}>
+                {cat.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+
         <Button
           variant="contained"
           color="primary"

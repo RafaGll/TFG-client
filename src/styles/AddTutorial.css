@@ -1,8 +1,7 @@
 /* Estilos específicos para AddTutorial */
 .add-tutorial-container {
-  margin-top: 65px;
   background-color: transparent;
-  height: calc(100vh - 65px);
+  height: calc(100vh);
   padding: 0;
   overflow: scroll;
 
@@ -18,7 +17,7 @@
 
 .add-tutorial-paper {
 margin-bottom: 5px; 
-padding: 5px 20px;
+padding: 80px 20px 20px 20px;
 }
 
 .add-tutorial-editor {
@@ -35,4 +34,11 @@ padding: 5px 20px;
 .MuiTextField-root label.MuiInputLabel-root::after {
   content: " *";
   color: red;
+}
+
+
+.mdxeditor-toolbar {
+  width: 75%;
+  position: fixed !important;
+  top: 65px;
 }

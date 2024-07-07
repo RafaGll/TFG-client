@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import api from "../api"; 
+import api from "../api";
 import {
   Container,
   TextField,
@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ContentTutorial from "./ContentTutorial";
-import "../styles/AddTutorial.css"; 
+import "../styles/AddTutorial.css";
 
 const AddTutorial = () => {
   const [title, setTitle] = useState("");
@@ -58,6 +58,10 @@ const AddTutorial = () => {
   return (
     <Container maxWidth="lg" className="add-tutorial-container">
       <Paper elevation={3} className="add-tutorial-paper">
+        <Box className="add-tutorial-editor" marginBottom={"-20px"}>
+          <ContentTutorial ref={contentTutorialRef} />
+        </Box>
+        <hr></hr>
         <Box display="flex" justifyContent="space-between" marginBottom={2}>
           <TextField
             label="Título"
@@ -83,9 +87,7 @@ const AddTutorial = () => {
             ))}
           </TextField>
         </Box>
-        <Box className="add-tutorial-editor">
-          <ContentTutorial ref={contentTutorialRef} />
-        </Box>
+
         <Button
           variant="contained"
           color="primary"
