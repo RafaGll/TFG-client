@@ -69,9 +69,8 @@ const ExerciseDetails = () => {
           (progress) => progress.category === categoryId
         );
 
-        if (userProgress) {
-          setCompletedExercises(userProgress.completed);
-        }
+        const completedExercises = userProgress ? userProgress.completed : [];
+        setCompletedExercises(completedExercises);
 
         const answers = [
           { text: response.data.answers.correct, isCorrect: true },
@@ -85,9 +84,9 @@ const ExerciseDetails = () => {
           new Array(answers.length).fill({ disabled: false, incorrect: false })
         );
 
-        // Determinar el siguiente ejercicio no completado
+        // Determine the next exercise not completed
         const nextExercise = exercisesInCategory.find(
-          (ex) => !userProgress.completed.includes(ex._id)
+          (ex) => !completedExercises.includes(ex._id)
         );
         if (nextExercise) {
           setNextExerciseId(nextExercise._id);
@@ -118,7 +117,7 @@ const ExerciseDetails = () => {
         )
       );
 
-      // Actualizar el progreso del usuario en el backend
+      // Update user progress on the backend
       try {
         const response = await api.patch(
           `${baseURL}/users/complete-exercise`,
@@ -133,13 +132,13 @@ const ExerciseDetails = () => {
           }
         );
 
-        // Actualizar el estado local con el progreso actualizado
+        // Update local state with updated progress
         const updatedProgress = response.data.completedExercises.find(
           (progress) => progress.category.toString() === exercise.category._id
         ).completed;
         setCompletedExercises(updatedProgress);
 
-        // Determinar el siguiente ejercicio no completado
+        // Determine the next exercise not completed
         const nextExercise = totalExercises.find(
           (ex) => !updatedProgress.includes(ex._id)
         );
@@ -147,7 +146,7 @@ const ExerciseDetails = () => {
           setNextExerciseId(nextExercise._id);
         }
 
-        console.log("Progreso actualizado:", response.data);
+        console.log("Progress updated:", response.data);
       } catch (error) {
         console.error("Error updating user progress:", error);
       }
@@ -256,6 +255,7 @@ const ExerciseDetails = () => {
       >
         <div style={{ width: "100%", marginBottom: "10px" }}>
           <Box
+           
             sx={{
               display: "flex",
               p: 1,
@@ -274,7 +274,7 @@ const ExerciseDetails = () => {
               alignItems="flex-start"
               style={{ marginLeft: "10px" }}
             >
-              <Box position="relative" display="inline-flex">
+              <Box position="relative" display="inline-flex" marginTop={"-20px"} marginBottom={"-15px"}>
                 <CircularProgress
                   variant="determinate"
                   value={progressPercentage}

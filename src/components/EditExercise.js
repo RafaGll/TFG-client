@@ -64,7 +64,10 @@ const EditExercise = () => {
         setLevel(exercise.level === 1 ? "Fácil" : "Difícil");
         setImages(exercise.images);
         setCorrectAnswer(exercise.answers.correct);
-        setIncorrectAnswers(exercise.answers.incorrect);
+        setIncorrectAnswers([
+          ...exercise.answers.incorrect,
+          ...Array(5 - exercise.answers.incorrect.length).fill(""),
+        ]);
         setExplanation(exercise.explanation);
       } catch (error) {
         console.error("Error fetching exercise:", error);
