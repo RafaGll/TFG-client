@@ -38,7 +38,7 @@ padding: 80px 20px 20px 20px;
 
 
 .mdxeditor-toolbar {
-  width: 75%;
+  left: 25%;
   position: fixed !important;
   top: 65px;
 }
