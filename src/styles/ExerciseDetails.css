@@ -1,5 +1,6 @@
 .container-exercise {
   height: 100vh;
+  padding: 20px 0;
   overflow: scroll;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
@@ -63,4 +64,12 @@
 .add-exercise-paper {
   padding: 15px 20px;
   margin: 10px 0;
+}
+
+.MuiTextField-root label.MuiInputLabel-root::after {
+  color: transparent !important;
+}
+
+.css-wgai2y-MuiFormLabel-asterisk {
+  color: red !important;
 }

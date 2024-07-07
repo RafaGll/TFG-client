@@ -62,11 +62,11 @@ background-color: #e0e0e0;
 }
 .tutorial-button.active {
   background-color: #e0e0e0;
-  margin: 10px 0 5px 20px;
+  margin: 10px 2px 5px 20px;
 }
 
 .category-tutorial-button {
-  margin: 10px 0px 0 0 !important;
+  margin: 10px 0 0 0 !important;
   border: 2px solid #bfbebe;
 
 }
@@ -79,8 +79,10 @@ background-color: #bfbebe;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-right: -25px;
-  margin-left: -9px;
+  margin: -15px -25px -15px -8px;
+  margin-top: -15px;
+  margin-bottom: -15px;
+  padding-top: 10px;
 }
 .arrow-buttons .arrow-button {
   background: none;

@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Box, ButtonGroup, Container } from "@mui/material";
 import api from "../api";
 import "../styles/ExerciseDetails.css";
+import { AuthContext } from "../context/AuthContext";
 
-const ExerciseNavigation = ({ categoryId, currentExerciseId, userProgress }) => {
+const ExerciseNavigation = ({
+  categoryId,
+  currentExerciseId,
+  userProgress,
+}) => {
   const [exercises, setExercises] = useState([]);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
 
@@ -69,25 +75,35 @@ const ExerciseNavigation = ({ categoryId, currentExerciseId, userProgress }) => 
           aria-label="Basic button group"
           fullWidth="false"
         >
-          {exercises.map((exercise) => (
-            <Button
-              key={exercise._id}
-              style={{ maxWidth: "70px" }}
-              variant={
-                exercise._id === currentExerciseId ? "contained" : "outlined"
-              }
-              color="secondary"
-              onClick={() => handleExerciseClick(exercise._id)}
-              disabled={
-                !userProgress.includes(exercise._id) &&
-                exercise._id !== nextExerciseId
-              }
-            >
-              {exercise.level === 1
-                ? exercise.order
-                : exercise.order + levelOneExercises}
-            </Button>
-          ))}
+          {exercises.map((exercise) => {
+            const isCompleted = userProgress.includes(exercise._id.toString());
+            const buttonVariant =
+              exercise._id === currentExerciseId ? "contained" : "outlined";
+            const buttonColor = isCompleted ? "primary" : "secondary";
+            const buttonStyle = isCompleted
+              ? { backgroundColor: "green", color: "white" }
+              : {};
+
+            return (
+              <Button
+                key={exercise._id}
+                style={{ maxWidth: "70px", ...buttonStyle }}
+                variant={buttonVariant}
+                color={buttonColor}
+                onClick={() => handleExerciseClick(exercise._id)}
+                disabled={
+                  !user ||
+                  (user.role !== "admin" &&
+                    !isCompleted &&
+                    exercise._id !== nextExerciseId)
+                }
+              >
+                {exercise.level === 1
+                  ? exercise.order
+                  : exercise.order + levelOneExercises}
+              </Button>
+            );
+          })}
         </ButtonGroup>
       </Container>
     </Box>

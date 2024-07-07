@@ -1,40 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { Container, TextField, Button, MenuItem, Paper, Box, Typography, Grid, IconButton } from "@mui/material";
-import api from "../api";
+import {
+  Container,
+  TextField,
+  Button,
+  MenuItem,
+  Paper,
+  Box,
+  Typography,
+  Grid,
+  IconButton,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
+import api from "../api";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import imageCompression from "browser-image-compression";
+import "../styles/ExerciseDetails.css";
 
 const EditExercise = () => {
-  const { id } = useParams(); // Obtener el ID del ejercicio de los parámetros de la URL
   const [problem, setProblem] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [level, setLevel] = useState("");
   const [images, setImages] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState("");
-  const [incorrectAnswers, setIncorrectAnswers] = useState(["", "", "", "", ""]);
+  const [incorrectAnswers, setIncorrectAnswers] = useState([
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
   const [explanation, setExplanation] = useState("");
   const navigate = useNavigate();
+  const { id } = useParams(); // Obtener el ID del ejercicio de la URL
   const baseURL = process.env.REACT_APP_API_URL;
 
-  useEffect(() => {
-    const fetchExercise = async () => {
-      try {
-        const response = await api.get(`${baseURL}/exercises/${id}`);
-        const exercise = response.data;
-        setProblem(exercise.problem);
-        setCategory(exercise.category._id); // Cambiar a category._id para mantener consistencia
-        setLevel(exercise.level === 1 ? "Fácil" : "Difícil"); // Convertir el nivel numérico a texto
-        setImages(exercise.images);
-        setCorrectAnswer(exercise.answers.correct);
-        setIncorrectAnswers([...exercise.answers.incorrect, "", "", "", "", ""].slice(0, 5));
-        setExplanation(exercise.explanation);
-      } catch (error) {
-        console.error("Error fetching exercise:", error);
-      }
-    };
+  const indexToLetter = (index) => {
+    const letters = "abcd";
+    return letters[index];
+  };
 
+  useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await api.get(`${baseURL}/categories`);
@@ -44,9 +51,28 @@ const EditExercise = () => {
       }
     };
 
-    fetchExercise();
     fetchCategories();
-  }, [id, baseURL]);
+  }, [baseURL]);
+
+  useEffect(() => {
+    const fetchExercise = async () => {
+      try {
+        const response = await api.get(`${baseURL}/exercises/${id}`);
+        const exercise = response.data;
+        setProblem(exercise.problem);
+        setCategory(exercise.category);
+        setLevel(exercise.level === 1 ? "Fácil" : "Difícil");
+        setImages(exercise.images);
+        setCorrectAnswer(exercise.answers.correct);
+        setIncorrectAnswers(exercise.answers.incorrect);
+        setExplanation(exercise.explanation);
+      } catch (error) {
+        console.error("Error fetching exercise:", error);
+      }
+    };
+
+    fetchExercise();
+  }, [baseURL, id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,23 +84,34 @@ const EditExercise = () => {
         category,
         images,
         correctAnswer,
-        incorrectAnswers: incorrectAnswers.filter(ans => ans),
+        incorrectAnswers: incorrectAnswers.filter((ans) => ans),
         explanation,
       });
       navigate("/exercises");
     } catch (error) {
-      console.error("Error editing exercise:", error);
+      console.error("Error updating exercise:", error);
     }
   };
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
-    if (file && images.length < 4) { // Limitar a 4 imágenes
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages([...images, reader.result]);
+    if (file && images.length < 4) {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
       };
-      reader.readAsDataURL(file);
+
+      try {
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImages([...images, reader.result]);
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+      }
     } else {
       alert("No puedes añadir más de 4 imágenes.");
     }
@@ -85,18 +122,25 @@ const EditExercise = () => {
   };
 
   const isFormValid = () => {
-    return problem && level && category && correctAnswer && explanation && incorrectAnswers.some(ans => ans);
+    return (
+      problem &&
+      level &&
+      category &&
+      correctAnswer &&
+      explanation &&
+      incorrectAnswers.some((ans) => ans)
+    );
   };
 
   return (
-    <Container maxWidth="lg" style={{ marginTop: "2rem" }}>
-      <Paper elevation={3} style={{ padding: "2rem" }}>
+    <Container maxWidth="lg" className="add-exercise-container">
+      <Paper elevation={3} className="add-exercise-paper">
         <Typography variant="h4" gutterBottom>
           Editar Ejercicio
         </Typography>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="add-exercise-form">
           <TextField
-            label="Problema *"
+            label="Problema"
             value={problem}
             onChange={(e) => setProblem(e.target.value)}
             fullWidth
@@ -106,7 +150,7 @@ const EditExercise = () => {
           />
           <TextField
             select
-            label="Categoría *"
+            label="Categoría"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
@@ -121,7 +165,7 @@ const EditExercise = () => {
           </TextField>
           <TextField
             select
-            label="Dificultad *"
+            label="Dificultad"
             value={level}
             onChange={(e) => setLevel(e.target.value)}
             fullWidth
@@ -131,15 +175,33 @@ const EditExercise = () => {
             <MenuItem value="Fácil">Fácil</MenuItem>
             <MenuItem value="Difícil">Difícil</MenuItem>
           </TextField>
-          <Box display="flex" flexDirection="column" marginBottom="1rem">
+          <Box className="image-upload-section">
             <Typography variant="h6">Imágenes</Typography>
             <Grid container spacing={2}>
               {images.map((img, index) => (
                 <Grid item xs={3} key={index} position="relative">
-                  <img src={img} alt={`uploaded-${index}`} style={{ width: "100%" }} />
-                  <IconButton 
+                  <img
+                    src={img}
+                    alt={`uploaded-${index}`}
+                    style={{ width: "100%" }}
+                  />
+                  <Typography
+                    style={{
+                      position: "absolute",
+                      top: 5,
+                      left: 5,
+                      color: "white",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      padding: "0 5px",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    {indexToLetter(index)}
+                  </Typography>
+                  <IconButton
                     onClick={() => handleImageRemove(index)}
-                    style={{ position: "absolute", top: 0, right: 0, backgroundColor: 'white' }}
+                    className="delete-image-button"
+                    style={{ position: "absolute", top: 0, right: 0 }}
                   >
                     <DeleteIcon color="error" />
                   </IconButton>
@@ -160,7 +222,7 @@ const EditExercise = () => {
             </label>
           </Box>
           <TextField
-            label="Respuesta Correcta *"
+            label="Respuesta Correcta"
             value={correctAnswer}
             onChange={(e) => setCorrectAnswer(e.target.value)}
             fullWidth
@@ -179,10 +241,11 @@ const EditExercise = () => {
               }}
               fullWidth
               margin="normal"
+              required={index === 0 ? true : false}
             />
           ))}
           <TextField
-            label="Explicación *"
+            label="Explicación"
             value={explanation}
             onChange={(e) => setExplanation(e.target.value)}
             fullWidth

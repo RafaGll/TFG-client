@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Container,
@@ -9,12 +9,16 @@ import {
   Button,
   CircularProgress,
   Tooltip,
+  Fab,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import api from "../api";
 import ExerciseNavigation from "./ExerciseNavigation";
+import { AuthContext } from "../context/AuthContext";
 import "../styles/ExerciseDetails.css";
 
 const ExerciseDetails = () => {
@@ -28,6 +32,7 @@ const ExerciseDetails = () => {
   const [showExplanation, setShowExplanation] = useState(false);
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
+  const { user } = useContext(AuthContext);
 
   const indexToLetter = (index) => {
     const letters = "abcd"; // Asume un máximo de 4 imágenes
@@ -165,6 +170,24 @@ const ExerciseDetails = () => {
     setShowExplanation(!showExplanation);
   };
 
+  const handleEditExercise = () => {
+    navigate(`/edit-exercise/${id}`);
+  };
+
+  const handleDeleteExercise = async () => {
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de que quieres eliminar este ejercicio?"
+    );
+    if (confirmDelete) {
+      try {
+        await api.delete(`${baseURL}/exercises/${id}`);
+        navigate("/exercises");
+      } catch (error) {
+        console.error("Error deleting exercise", error);
+      }
+    }
+  };
+
   if (!exercise) {
     return (
       <Container maxWidth="lg" style={{ marginTop: "2rem" }}>
@@ -178,6 +201,28 @@ const ExerciseDetails = () => {
 
   return (
     <Container maxWidth="lg" className="container-exercise">
+      {user && user.role === "admin" && (
+        <>
+          <Fab
+            color="error"
+            size="small"
+            aria-label="delete"
+            style={{ position: "absolute", right: "170px", top: "20px" }}
+            onClick={handleDeleteExercise}
+          >
+            <DeleteIcon />
+          </Fab>
+          <Fab
+            color="secondary"
+            size="small"
+            aria-label="edit"
+            style={{ position: "absolute", right: "220px", top: "20px" }}
+            onClick={handleEditExercise}
+          >
+            <EditIcon />
+          </Fab>
+        </>
+      )}
       <Box
         sx={{
           display: "flex",
@@ -196,7 +241,7 @@ const ExerciseDetails = () => {
           <ArrowBackIcon sx={{ fontSize: 40, color: "blue" }} />
         </Button>
         <Typography
-          variant="h2"
+          variant="h4"
           gutterBottom
           style={{ fontWeight: "bold", textTransform: "uppercase" }}
         >
@@ -325,18 +370,18 @@ const ExerciseDetails = () => {
           currentExerciseId={id}
           userProgress={completedExercises}
         />
-<Button
-            variant="contained"
-            color="success"
-            disabled={
-              !disabledButtons.every((btn) => btn.disabled === true) ||
-              completedExercises.length === totalExercises.length
-            }
-            style={{ maxHeight: "40px", marginTop: "20px", boxShadow: "none" }}
-            onClick={handleNextClick}
-          >
-            SIGUIENTE
-          </Button>
+        <Button
+          variant="contained"
+          color="success"
+          disabled={
+            !disabledButtons.every((btn) => btn.disabled === true) ||
+            completedExercises.length === totalExercises.length
+          }
+          style={{ maxHeight: "40px", marginTop: "20px", boxShadow: "none" }}
+          onClick={handleNextClick}
+        >
+          SIGUIENTE
+        </Button>
         <Box
           sx={{
             display: "flex",
@@ -344,7 +389,6 @@ const ExerciseDetails = () => {
             mt: 2,
           }}
         >
-          
           <Tooltip title="USAR SOLO SI ESTÁS ATASCADO">
             <Button
               variant="outlined"
