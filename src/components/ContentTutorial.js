@@ -30,6 +30,7 @@ import {
   sandpackPlugin,
   codeMirrorPlugin,
   StrikeThroughSupSubToggles,
+  ListsToggle,
 } from "@mdxeditor/editor";
 
 const defaultSnippetContent = `
@@ -126,6 +127,8 @@ const ContentTutorial = forwardRef((props, ref) => {
               <CreateLink />
               <InsertTable />
               <InsertImage />
+              <Separator />
+              <ListsToggle />
               <Separator />
               <StrikeThroughSupSubToggles />
               <Separator />

@@ -34,7 +34,9 @@ import {
   codeBlockPlugin,
   InsertCodeBlock,
   sandpackPlugin,
-  codeMirrorPlugin
+  codeMirrorPlugin,
+  StrikeThroughSupSubToggles,
+  ListsToggle,
 } from "@mdxeditor/editor";
 
 const defaultSnippetContent = `
@@ -49,19 +51,19 @@ export default function App() {
 `.trim();
 
 const simpleSandpackConfig = {
-  defaultPreset: 'react',
+  defaultPreset: "react",
   presets: [
     {
-      label: 'React',
-      name: 'react',
-      meta: 'live react',
-      sandpackTemplate: 'react',
-      sandpackTheme: 'light',
-      snippetFileName: '/App.js',
-      snippetLanguage: 'jsx',
-      initialSnippetContent: defaultSnippetContent
+      label: "React",
+      name: "react",
+      meta: "live react",
+      sandpackTemplate: "react",
+      sandpackTheme: "light",
+      snippetFileName: "/App.js",
+      snippetLanguage: "jsx",
+      initialSnippetContent: defaultSnippetContent,
     },
-  ]
+  ],
 };
 
 const EditTutorial = () => {
@@ -163,11 +165,15 @@ const EditTutorial = () => {
                   formData.append("image", file);
 
                   try {
-                    const response = await api.post(`${baseURL}/upload`, formData, {
-                      headers: {
-                        "Content-Type": "multipart/form-data",
-                      },
-                    });
+                    const response = await api.post(
+                      `${baseURL}/upload`,
+                      formData,
+                      {
+                        headers: {
+                          "Content-Type": "multipart/form-data",
+                        },
+                      }
+                    );
 
                     const imageUrl = response.data.imageUrl;
                     return imageUrl;
@@ -184,16 +190,16 @@ const EditTutorial = () => {
               linkPlugin(),
               quotePlugin(),
               markdownShortcutPlugin(),
-              codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+              codeBlockPlugin({ defaultCodeBlockLanguage: "js" }),
               sandpackPlugin({ sandpackConfig: simpleSandpackConfig }),
               codeMirrorPlugin({
                 codeBlockLanguages: {
-                  js: 'JavaScript',
-                  css: 'CSS',
-                  html: 'HTML',
-                  python: 'Python',
-                  java: 'Java',
-                  cpp: 'C++',
+                  js: "JavaScript",
+                  css: "CSS",
+                  html: "HTML",
+                  python: "Python",
+                  java: "Java",
+                  cpp: "C++",
                 },
                 extensions: [
                   (view) => {
@@ -204,23 +210,32 @@ const EditTutorial = () => {
                             if (event.key === "Tab") {
                               event.preventDefault();
                               const { state, dispatch } = view;
-                              if (state.selection.ranges.some((range) => !range.empty)) {
-                                dispatch(state.update(state.replaceSelection("\t")));
+                              if (
+                                state.selection.ranges.some(
+                                  (range) => !range.empty
+                                )
+                              ) {
+                                dispatch(
+                                  state.update(state.replaceSelection("\t"))
+                                );
                               } else {
                                 const transaction = state.update({
-                                  changes: { from: state.selection.main.head, insert: "\t" }
+                                  changes: {
+                                    from: state.selection.main.head,
+                                    insert: "\t",
+                                  },
                                 });
                                 dispatch(transaction);
                               }
                               return true;
                             }
                             return false;
-                          }
-                        }
-                      }
+                          },
+                        },
+                      },
                     };
-                  }
-                ]
+                  },
+                ],
               }),
               toolbarPlugin({
                 toolbarContents: () => (
@@ -233,6 +248,10 @@ const EditTutorial = () => {
                     <CreateLink />
                     <InsertTable />
                     <InsertImage />
+                    <Separator />
+                    <ListsToggle />
+                    <Separator />
+                    <StrikeThroughSupSubToggles />
                     <Separator />
                     <CodeToggle />
                     <InsertCodeBlock />
