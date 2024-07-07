@@ -94,6 +94,10 @@ background-color: #bfbebe;
   outline: none;
 }
 
+/* Tutorials.css */
+.syntax-highlighter {
+  font-size: 0.8em !important; /* Ajusta el tamaño de la fuente según tus necesidades */
+}
 
 /* Styles for tables rendered by react-markdown */
 .tutorial-content table {

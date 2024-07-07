@@ -29,6 +29,7 @@ import {
   InsertCodeBlock,
   sandpackPlugin,
   codeMirrorPlugin,
+  StrikeThroughSupSubToggles,
 } from "@mdxeditor/editor";
 
 const defaultSnippetContent = `
@@ -125,6 +126,8 @@ const ContentTutorial = forwardRef((props, ref) => {
               <CreateLink />
               <InsertTable />
               <InsertImage />
+              <Separator />
+              <StrikeThroughSupSubToggles />
               <Separator />
               <CodeToggle />
               <InsertCodeBlock />
