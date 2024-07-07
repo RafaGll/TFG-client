@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import ContentTutorial from "./ContentTutorial";
 import "../styles/AddTutorial.css";
 
+// Componente principal
 const AddTutorial = () => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -22,6 +23,7 @@ const AddTutorial = () => {
   const baseURL = process.env.REACT_APP_API_URL;
   const contentTutorialRef = useRef();
 
+  // Hook para cargar las categorías al inicial el componente
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -35,6 +37,7 @@ const AddTutorial = () => {
     fetchCategories();
   }, [baseURL]);
 
+  // Función para enviar el formulario al servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
     const contentFromEditor = contentTutorialRef.current.getContent();
@@ -46,6 +49,7 @@ const AddTutorial = () => {
     navigate("/tutorials");
   };
 
+  // Hook para habilitar/deshabilitar el botón de añadir
   useEffect(() => {
     const contentFromEditor = contentTutorialRef.current?.getContent();
     if (title && category && contentFromEditor) {
@@ -58,7 +62,8 @@ const AddTutorial = () => {
   return (
     <Container maxWidth="lg" className="add-tutorial-container">
       <Paper elevation={3} className="add-tutorial-paper">
-        <Box className="add-tutorial-editor" marginBottom={"-20px"}>
+        <hr></hr>
+        <Box className="add-tutorial-editor" marginBottom={"-20px"} marginTop={"-20px"}>
           <ContentTutorial ref={contentTutorialRef} />
         </Box>
         <hr></hr>

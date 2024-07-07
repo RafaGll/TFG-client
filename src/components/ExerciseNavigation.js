@@ -5,6 +5,7 @@ import api from "../api";
 import "../styles/ExerciseDetails.css";
 import { AuthContext } from "../context/AuthContext";
 
+// Componente principal
 const ExerciseNavigation = ({
   categoryId,
   currentExerciseId,
@@ -15,6 +16,7 @@ const ExerciseNavigation = ({
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
 
+  // Hook para cargar los ejercicios al inicial el componente
   useEffect(() => {
     const fetchExercises = async () => {
       try {
@@ -30,6 +32,7 @@ const ExerciseNavigation = ({
       }
     };
 
+    // Llamar a la función para cargar los ejercicios
     if (categoryId) {
       fetchExercises();
     } else {
@@ -37,14 +40,17 @@ const ExerciseNavigation = ({
     }
   }, [categoryId, baseURL]);
 
+  // Función para manejar el click en un ejercicio
   const handleExerciseClick = (exerciseId) => {
     navigate(`/exercises/${exerciseId}`);
   };
 
+  // Contar el número de ejercicios de nivel 1
   const levelOneExercises = exercises.filter(
     (exercise) => exercise.level === 1
   ).length;
 
+  // Función para obtener el ID del siguiente ejercicio
   const getNextExerciseId = () => {
     const completedIds = new Set(userProgress);
     let lastCompletedIndex = -1;
@@ -57,7 +63,7 @@ const ExerciseNavigation = ({
       }
     }
 
-    // Return the next exercise ID if it exists
+    // Si no se ha completado el último ejercicio
     if (lastCompletedIndex + 1 < exercises.length) {
       return exercises[lastCompletedIndex + 1]._id;
     }

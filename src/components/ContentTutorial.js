@@ -1,5 +1,4 @@
 import React, {
-  useRef,
   useImperativeHandle,
   forwardRef,
   useState,
@@ -45,6 +44,7 @@ export default function App() {
 }
 `.trim();
 
+// Configuración de Sandpack para el editor de código
 const simpleSandpackConfig = {
   defaultPreset: "react",
   presets: [
@@ -61,6 +61,7 @@ const simpleSandpackConfig = {
   ],
 };
 
+// Componente principal
 const ContentTutorial = forwardRef((props, ref) => {
   const [content, setContent] = useState("Hello world");
   const baseURL = process.env.REACT_APP_API_URL;

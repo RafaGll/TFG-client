@@ -11,6 +11,7 @@ import {
 import { Edit, Save, Delete, Add } from "@mui/icons-material";
 import "../styles/Categories.css";
 
+// Componente principal 
 const Categories = () => {
   // Estados para manejar las categorías y el estado de edición/agregado
   const [categories, setCategories] = useState([]);
@@ -59,7 +60,6 @@ const Categories = () => {
   const handleDeleteClick = async (id) => {
     try {
       const response = await api.delete(`${baseURL}/categories/${id}`);
-      console.log(response.data); // Información de depuración
       fetchCategories(); // Actualizar la lista de categorías
     } catch (error) {
       console.error("Error deleting category:", error);

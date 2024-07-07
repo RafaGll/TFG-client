@@ -17,6 +17,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const defaultTheme = createTheme();
 
+// Componente de registro
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,11 +27,13 @@ function Register() {
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Validar que las contraseñas coincidan
   useEffect(() => {
     setPasswordMatch(password === confirmPassword);
     setFormValid(username !== "" && password !== "" && confirmPassword !== "" && password === confirmPassword);
   }, [username, password, confirmPassword]);
 
+  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formValid) {

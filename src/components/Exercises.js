@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../styles/Exercises.css";
 
+// Componente de la página de ejercicios
 const Exercises = () => {
   const [categories, setCategories] = useState([]);
   const [startedCategories, setStartedCategories] = useState([]);
@@ -14,7 +15,9 @@ const Exercises = () => {
   const [selectedType, setSelectedType] = useState("Estructura de datos"); // Default to 'Estructura de datos'
   const navigate = useNavigate();
 
+  // Fetch categories
   useEffect(() => {
+    // Función para obtener las categorías
     const fetchCategories = async () => {
       try {
         const res = await api.get(`${baseURL}/categories`);
@@ -27,7 +30,9 @@ const Exercises = () => {
     fetchCategories();
   }, [baseURL]);
 
+  // Fetch started categories for the user
   useEffect(() => {
+    // Función para obtener las categorías iniciadas por el usuario
     const fetchStartedCategories = async () => {
       try {
         const res = await api.get(`${baseURL}/users/progress`, {
@@ -35,6 +40,7 @@ const Exercises = () => {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Utiliza el token de autenticación almacenado
           },
         });
+        // Almacena las categorías iniciadas por el usuario
         setStartedCategories(res.data);
       } catch (error) {
         console.error("Error fetching started categories:", error);
@@ -44,7 +50,9 @@ const Exercises = () => {
     fetchStartedCategories();
   }, [baseURL]);
 
+  // Fetch total exercises for each category
   useEffect(() => {
+    // Función para obtener el total de ejercicios por categoría
     const fetchExercises = async () => {
       try {
         const res = await api.get(`${baseURL}/exercises/total`);
@@ -57,10 +65,12 @@ const Exercises = () => {
     fetchExercises();
   }, [baseURL]);
 
+  // Función para filtrar las categorías por tipo
   const handleCategoryFilter = (type) => {
     setSelectedType(type);
   };
 
+  // Función para manejar el click en una categoría
   const handleCategoryClick = async (categoryId) => {
     try {
       const res = await api.get(`${baseURL}/exercises/next/${categoryId}`, {
@@ -70,6 +80,7 @@ const Exercises = () => {
       });
       const nextExercise = res.data;
 
+      // Redirige al siguiente ejercicio
       if (nextExercise) {
         navigate(`/exercises/${nextExercise._id}`);
       } else {

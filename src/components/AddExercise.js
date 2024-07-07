@@ -17,6 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import imageCompression from "browser-image-compression";
 import "../styles/ExerciseDetails.css";
 
+// Componente principal
 const AddExercise = () => {
   const [problem, setProblem] = useState("");
   const [category, setCategory] = useState("");
@@ -40,6 +41,7 @@ const AddExercise = () => {
     return letters[index];
   };
 
+  // Hook para cargar las categorías al inicial el componente
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -53,6 +55,7 @@ const AddExercise = () => {
     fetchCategories();
   }, [baseURL]);
 
+  // Función para enviar el formulario al servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
     const mappedLevel = level === "Fácil" ? 1 : 2;
@@ -72,6 +75,7 @@ const AddExercise = () => {
     }
   };
 
+  // Función para comprimir y subir las imágenes al servidor
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file && images.length < 4) {
@@ -96,6 +100,7 @@ const AddExercise = () => {
     }
   };
 
+  // Función para eliminar una imagen tras subirla
   const handleImageRemove = (index) => {
     setImages(images.filter((_, i) => i !== index));
   };

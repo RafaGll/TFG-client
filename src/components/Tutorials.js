@@ -21,6 +21,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import "../styles/Tutorials.css";
 
+// Componente principal
 const Tutorials = () => {
   const [tutorials, setTutorials] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -32,6 +33,7 @@ const Tutorials = () => {
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
 
+  // Hook para cargar los tutoriales y categorías al inicial el componente
   useEffect(() => {
     const fetchTutorials = async () => {
       try {
@@ -42,6 +44,7 @@ const Tutorials = () => {
       }
     };
 
+    // Función para obtener las categorías
     const fetchCategories = async () => {
       try {
         const response = await api.get(`${baseURL}/categories`);
@@ -52,6 +55,7 @@ const Tutorials = () => {
           }
           return acc;
         }, {});
+        // Inicializa los tipos de categorías expandidos
         setExpandedTypes(types);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -62,11 +66,13 @@ const Tutorials = () => {
     fetchCategories();
   }, [baseURL]);
 
+  // Función para seleccionar una categoría
   const handleSelectCategory = (categoryId) => {
     setSelectedCategory(categoryId);
     setSelectedTutorial(null);
   };
 
+  // Función para seleccionar un tutorial
   const handleSelectTutorial = (tutorial) => {
     setSelectedTutorial(tutorial);
   };
@@ -84,6 +90,7 @@ const Tutorials = () => {
     }
   };
 
+  // Función para eliminar un tutorial
   const handleDeleteTutorial = async () => {
     if (selectedTutorial) {
       const confirmDelete = window.confirm(
@@ -101,6 +108,7 @@ const Tutorials = () => {
     }
   };
 
+ // Función para mover un tutorial de posición y cambiar su orden
   const handleMoveTutorial = async (tutorial, direction) => {
     const currentOrder = tutorial.order;
     const currentCategory = tutorial.category;
@@ -129,6 +137,7 @@ const Tutorials = () => {
         order: currentOrder,
       });
 
+      // Actualiza el orden de los tutoriales
       const updatedTutorials = tutorials.map((t) => {
         if (t._id === tutorial._id) {
           return { ...t, order: swapTutorial.order };

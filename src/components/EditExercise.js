@@ -17,6 +17,7 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import imageCompression from "browser-image-compression";
 import "../styles/ExerciseDetails.css";
 
+// Componente principal 
 const EditExercise = () => {
   const [problem, setProblem] = useState("");
   const [category, setCategory] = useState("");
@@ -36,11 +37,13 @@ const EditExercise = () => {
   const { id } = useParams(); // Obtener el ID del ejercicio de la URL
   const baseURL = process.env.REACT_APP_API_URL;
 
+  // Función para convertir un índice a una letra
   const indexToLetter = (index) => {
     const letters = "abcd";
     return letters[index];
   };
 
+  // Hook para cargar las categorías y el ejercicio al inicial el componente
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -54,6 +57,7 @@ const EditExercise = () => {
     fetchCategories();
   }, [baseURL]);
 
+  // Hook para cargar el ejercicio al inicial el componente
   useEffect(() => {
     const fetchExercise = async () => {
       try {
@@ -77,6 +81,7 @@ const EditExercise = () => {
     fetchExercise();
   }, [baseURL, id]);
 
+  // Función para enviar el formulario al servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
     const mappedLevel = level === "Fácil" ? 1 : 2;
@@ -96,6 +101,7 @@ const EditExercise = () => {
     }
   };
 
+  // Función para comprimir y subir las imágenes al servidor
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file && images.length < 4) {
@@ -120,10 +126,12 @@ const EditExercise = () => {
     }
   };
 
+  // Función para eliminar una imagen
   const handleImageRemove = (index) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
+  // Función para validar el formulario
   const isFormValid = () => {
     return (
       problem &&

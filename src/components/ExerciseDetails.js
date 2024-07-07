@@ -21,6 +21,7 @@ import ExerciseNavigation from "./ExerciseNavigation";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/ExerciseDetails.css";
 
+// Componente principal
 const ExerciseDetails = () => {
   const { id } = useParams();
   const [exercise, setExercise] = useState(null);
@@ -39,23 +40,29 @@ const ExerciseDetails = () => {
     return letters[index] || "?"; // Retorna '?' para índices fuera del rango
   };
 
+  // Hook para cargar el ejercicio y los detalles al inicial el componente
   useEffect(() => {
+    // Función para obtener el ejercicio del backend
     const fetchExercise = async () => {
+      setShowExplanation(false);
       try {
         const response = await api.get(`${baseURL}/exercises/${id}`);
         setExercise(response.data);
 
+        // Obtener todos los ejercicios de la misma categoría
         const categoryId = response.data.category._id;
         const totalResponse = await api.get(`${baseURL}/exercises`, {
           params: { category: categoryId },
         });
 
+        // Filtrar los ejercicios de la misma categoría
         const exercisesInCategory = totalResponse.data.filter(
           (exercise) => exercise.category._id === categoryId
         );
 
         setTotalExercises(exercisesInCategory);
 
+        // Obtener el progreso del usuario
         const userProgressResponse = await api.get(
           `${baseURL}/users/progress`,
           {
@@ -65,13 +72,16 @@ const ExerciseDetails = () => {
           }
         );
 
+        // Encontrar el progreso del usuario en la categoría actual
         const userProgress = userProgressResponse.data.find(
           (progress) => progress.category === categoryId
         );
 
+        // Obtener los ejercicios completados por el usuario
         const completedExercises = userProgress ? userProgress.completed : [];
         setCompletedExercises(completedExercises);
 
+        // Obtener las respuestas del ejercicio actual
         const answers = [
           { text: response.data.answers.correct, isCorrect: true },
           ...response.data.answers.incorrect.map((ans) => ({
@@ -84,7 +94,7 @@ const ExerciseDetails = () => {
           new Array(answers.length).fill({ disabled: false, incorrect: false })
         );
 
-        // Determine the next exercise not completed
+        // Encontrar el siguiente ejercicio no completado
         const nextExercise = exercisesInCategory.find(
           (ex) => !completedExercises.includes(ex._id)
         );
@@ -103,6 +113,7 @@ const ExerciseDetails = () => {
     return array.sort(() => Math.random() - 0.5);
   };
 
+  // Función para manejar el click en una respuesta
   const handleAnswerClick = async (index, isCorrect) => {
     if (isCorrect) {
       setShowExplanation(true);
@@ -116,8 +127,6 @@ const ExerciseDetails = () => {
           i === index ? { disabled: true, incorrect: false } : btnState
         )
       );
-
-      // Update user progress on the backend
       try {
         const response = await api.patch(
           `${baseURL}/users/complete-exercise`,
@@ -132,13 +141,13 @@ const ExerciseDetails = () => {
           }
         );
 
-        // Update local state with updated progress
+        // Actualizar el progreso del usuario
         const updatedProgress = response.data.completedExercises.find(
           (progress) => progress.category.toString() === exercise.category._id
         ).completed;
         setCompletedExercises(updatedProgress);
 
-        // Determine the next exercise not completed
+        // Encontrar el siguiente ejercicio no completado
         const nextExercise = totalExercises.find(
           (ex) => !updatedProgress.includes(ex._id)
         );
@@ -159,20 +168,25 @@ const ExerciseDetails = () => {
     }
   };
 
+  // Función para manejar el click en el botón de siguiente
   const handleNextClick = () => {
     if (nextExerciseId) {
+      setShowExplanation(false);
       navigate(`/exercises/${nextExerciseId}`);
     }
   };
 
+  // Función para manejar el click en el botón de mostrar pista
   const handleShowExplanationClick = () => {
     setShowExplanation(!showExplanation);
   };
 
+  // Función para manejar el click en el botón de editar ejercicio
   const handleEditExercise = () => {
     navigate(`/edit-exercise/${id}`);
   };
 
+  // Función para manejar el click en el botón de eliminar ejercicio
   const handleDeleteExercise = async () => {
     const confirmDelete = window.confirm(
       "¿Estás seguro de que quieres eliminar este ejercicio?"
@@ -186,7 +200,7 @@ const ExerciseDetails = () => {
       }
     }
   };
-
+  // Mostrar un mensaje de carga si el ejercicio no ha sido cargado
   if (!exercise) {
     return (
       <Container maxWidth="lg" style={{ marginTop: "2rem" }}>
@@ -195,6 +209,7 @@ const ExerciseDetails = () => {
     );
   }
 
+  // Calcular el porcentaje de progreso del usuario
   const progressPercentage =
     (completedExercises.length / totalExercises.length) * 100;
 

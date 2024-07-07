@@ -50,6 +50,7 @@ export default function App() {
 }
 `.trim();
 
+// Configuración de Sandpack para el editor de código
 const simpleSandpackConfig = {
   defaultPreset: "react",
   presets: [
@@ -66,6 +67,7 @@ const simpleSandpackConfig = {
   ],
 };
 
+// Componente principal
 const EditTutorial = () => {
   const { id } = useParams();
   const [title, setTitle] = useState("");
@@ -77,6 +79,7 @@ const EditTutorial = () => {
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
 
+  // Hook para cargar el tutorial y las categorías al inicial el componente
   useEffect(() => {
     const fetchTutorial = async () => {
       try {
@@ -90,6 +93,7 @@ const EditTutorial = () => {
       }
     };
 
+    // Función para obtener todas las categorías del backend
     const fetchCategories = async () => {
       try {
         const response = await api.get(`${baseURL}/categories`);
@@ -103,6 +107,7 @@ const EditTutorial = () => {
     fetchCategories();
   }, [id, baseURL]);
 
+  // Función para enviar el formulario al servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
     await api.patch(`${baseURL}/tutorials/${id}`, {
@@ -113,6 +118,7 @@ const EditTutorial = () => {
     navigate("/tutorials");
   };
 
+  // Hook para habilitar/deshabilitar el botón de añadir
   useEffect(() => {
     if (title && category && content) {
       setIsButtonDisabled(false);
@@ -128,7 +134,8 @@ const EditTutorial = () => {
   return (
     <Container maxWidth="lg" className="add-tutorial-container">
       <Paper elevation={3} className="add-tutorial-paper">
-        <Box className="add-tutorial-editor" marginBottom={"-20px"}>
+        <hr></hr>
+        <Box className="add-tutorial-editor" marginBottom={"-20px"} marginTop={"-20px"}>
           <MDXEditor
             markdown={content}
             onChange={setContent}

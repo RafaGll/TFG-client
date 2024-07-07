@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Container, Typography, Grid, Paper, Box } from "@mui/material";
 import api from "../api";
 
+// Componente principal
 const ExercisesOrder = () => {
   const [exercises, setExercises] = useState([]);
   const baseURL = process.env.REACT_APP_API_URL;
 
+  // Hook para cargar los ejercicios al inicial el componente
   useEffect(() => {
+    // Función para obtener los ejercicios
     const fetchExercises = async () => {
       try {
         const res = await api.get(`${baseURL}/exercises`);
