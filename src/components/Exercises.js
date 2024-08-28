@@ -5,19 +5,18 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../styles/Exercises.css";
 
-// Componente de la página de ejercicios
 const Exercises = () => {
   const [categories, setCategories] = useState([]);
   const [startedCategories, setStartedCategories] = useState([]);
   const [exercises, setExercises] = useState([]);
   const { user } = useContext(AuthContext);
   const baseURL = process.env.REACT_APP_API_URL;
-  const [selectedType, setSelectedType] = useState("Estructura de datos"); // Default to 'Estructura de datos'
+  const [selectedType, setSelectedType] = useState("Estructura de datos");
+  const [isMobile, setIsMobile] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch categories
   useEffect(() => {
-    // Función para obtener las categorías
     const fetchCategories = async () => {
       try {
         const res = await api.get(`${baseURL}/categories`);
@@ -26,33 +25,43 @@ const Exercises = () => {
         console.error("Error fetching categories:", error);
       }
     };
-
     fetchCategories();
   }, [baseURL]);
 
-  // Fetch started categories for the user
   useEffect(() => {
-    // Función para obtener las categorías iniciadas por el usuario
     const fetchStartedCategories = async () => {
       try {
         const res = await api.get(`${baseURL}/users/progress`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`, // Utiliza el token de autenticación almacenado
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
-        // Almacena las categorías iniciadas por el usuario
         setStartedCategories(res.data);
       } catch (error) {
         console.error("Error fetching started categories:", error);
       }
     };
-
     fetchStartedCategories();
   }, [baseURL]);
 
-  // Fetch total exercises for each category
   useEffect(() => {
-    // Función para obtener el total de ejercicios por categoría
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 767);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const toggleProgress = () => {
+    setShowProgress(!showProgress);
+  };
+
+  useEffect(() => {
     const fetchExercises = async () => {
       try {
         const res = await api.get(`${baseURL}/exercises/total`);
@@ -61,16 +70,13 @@ const Exercises = () => {
         console.error("Error fetching exercises:", error);
       }
     };
-
     fetchExercises();
   }, [baseURL]);
 
-  // Función para filtrar las categorías por tipo
   const handleCategoryFilter = (type) => {
     setSelectedType(type);
   };
 
-  // Función para manejar el click en una categoría
   const handleCategoryClick = async (categoryId) => {
     try {
       const res = await api.get(`${baseURL}/exercises/next/${categoryId}`, {
@@ -80,7 +86,6 @@ const Exercises = () => {
       });
       const nextExercise = res.data;
 
-      // Redirige al siguiente ejercicio
       if (nextExercise) {
         navigate(`/exercises/${nextExercise._id}`);
       } else {
@@ -93,107 +98,116 @@ const Exercises = () => {
 
   return (
     <Box className="exercises-page">
-      <Container
-        className="exercises-container"
-        sx={{ gridRow: "1", gridColumn: "span 3" }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Actividades
-        </Typography>
-        <Box className="category-filters">
-          <button
-            className={`filter-button ${
-              selectedType === "Estructura de datos" ? "selected" : ""
-            }`}
-            onClick={() => handleCategoryFilter("Estructura de datos")}
-          >
-            Estructuras de datos
+      {isMobile && (
+        // <Box className="change-list justify-content-center">
+          <button className="button-change-list" onClick={toggleProgress}>
+          {showProgress ? "Progreso" : "Ejercicios"}
           </button>
-          <button
-            className={`filter-button ${
-              selectedType === "Algoritmo" ? "selected" : ""
-            }`}
-            onClick={() => handleCategoryFilter("Algoritmo")}
-          >
-            Algoritmos
-          </button>
-        </Box>
-        <Grid
-          sx={{
-            display: "grid",
-            columnGap: 3,
-            rowGap: 1,
-            gridTemplateColumns: "repeat(2, 1fr)",
-          }}
-        >
-          {categories.length > 0 ? (
-            categories
-              .filter((c) => c.type === selectedType)
-              .map((category) => (
-                <button
-                  className="select-category"
-                  key={category._id}
-                  onClick={() => handleCategoryClick(category._id)}
-                >
-                  <Typography className="button-text" variant="h6">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    {category.name}
-                  </Typography>
-                </button>
-              ))
-          ) : (
-            <Typography>No hay categorías</Typography>
-          )}
-        </Grid>
-      </Container>
-      <Container
-        className="user-box"
-        sx={{ gridRow: "1", gridColumn: "4 / 5", overflowX: "scroll" }}
-      >
-        <Typography variant="h5" gutterBottom>
-          Mi Progreso
-        </Typography>
-        <ButtonGroup orientation="vertical" sx={{ display: "grid" }}>
-          {startedCategories.length > 0 ? (
-            startedCategories.map((cat) => {
-              const completedExercises = cat.completed.length;
-              const categoryExercises = exercises.find(
-                (e) => e.categoryId === cat.category
-              );
-              const totalExercises = categoryExercises
-                ? categoryExercises.count
-                : 0;
-              const initialPercentage =
-                (completedExercises / totalExercises) * 100;
-              const widthPercentage =
-                initialPercentage > 10 ? initialPercentage : 10;
+        // </Box>
+      )}
 
-              return (
-                <Grid
-                  sx={{ display: "grid", gridAutoColumns: "1" }}
-                  key={cat._id}
-                >
+      {/* Mostrar siempre la lista de ejercicios en escritorio y tablet, y alternar en móvil */}
+      {(!isMobile || !showProgress) && (
+        <Container
+          className="exercises-container"
+          sx={{ gridRow: "1", gridColumn: "span 3" }}
+        >
+          <Typography variant="h4" gutterBottom>
+            Actividades
+          </Typography>
+          <Box className="category-filters">
+            <button
+              className={`filter-button ${
+                selectedType === "Estructura de datos" ? "selected" : ""
+              }`}
+              onClick={() => handleCategoryFilter("Estructura de datos")}
+            >
+              Estructuras de datos
+            </button>
+            <button
+              className={`filter-button ${
+                selectedType === "Algoritmo" ? "selected" : ""
+              }`}
+              onClick={() => handleCategoryFilter("Algoritmo")}
+            >
+              Algoritmos
+            </button>
+          </Box>
+          <Grid
+          className="category-grid"
+          >
+            {categories.length > 0 ? (
+              categories
+                .filter((c) => c.type === selectedType)
+                .map((category) => (
                   <button
-                    className="user-select-category"
-                    onClick={() => handleCategoryClick(cat.category)}
-                    style={{ "--completed-width": `${widthPercentage}%` }}
+                    className="select-category"
+                    key={category._id}
+                    onClick={() => handleCategoryClick(category._id)}
                   >
-                    <Typography className="button-text" variant="body1">
-                      {categories.find((c) => c._id === cat.category)?.name ||
-                        "Categoría no encontrada"}
+                    <Typography className="button-text" variant="h6">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                      {category.name}
                     </Typography>
                   </button>
-                </Grid>
-              );
-            })
-          ) : (
-            <Typography>No has empezado a trabajar</Typography>
-          )}
-        </ButtonGroup>
-      </Container>
+                ))
+            ) : (
+              <Typography>No hay categorías</Typography>
+            )}
+          </Grid>
+        </Container>
+      )}
+
+      {/* Mostrar siempre el progreso en escritorio y tablet, y alternar en móvil */}
+      {(!isMobile || showProgress) && (
+        <Container
+          className="user-box"
+        >
+          <Typography variant="h5" gutterBottom>
+            Mi Progreso
+          </Typography>
+          <ButtonGroup orientation="vertical" sx={{ display: "grid" }}>
+            {startedCategories.length > 0 ? (
+              startedCategories.map((cat) => {
+                const completedExercises = cat.completed.length;
+                const categoryExercises = exercises.find(
+                  (e) => e.categoryId === cat.category
+                );
+                const totalExercises = categoryExercises
+                  ? categoryExercises.count
+                  : 0;
+                const initialPercentage =
+                  (completedExercises / totalExercises) * 100;
+                const widthPercentage =
+                  initialPercentage > 10 ? initialPercentage : 10;
+
+                return (
+                  <Grid
+                    sx={{ display: "grid", gridAutoColumns: "1" }}
+                    key={cat._id}
+                  >
+                    <button
+                      className="user-select-category"
+                      onClick={() => handleCategoryClick(cat.category)}
+                      style={{ "--completed-width": `${widthPercentage}%` }}
+                    >
+                      <Typography className="button-text" variant="body1">
+                        {categories.find((c) => c._id === cat.category)?.name ||
+                          "Categoría no encontrada"}
+                      </Typography>
+                    </button>
+                  </Grid>
+                );
+              })
+            ) : (
+              <Typography>No has empezado a trabajar</Typography>
+            )}
+          </ButtonGroup>
+        </Container>
+      )}
     </Box>
   );
 };
