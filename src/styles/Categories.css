@@ -18,6 +18,16 @@
   margin-bottom: 20px;
 }
 
+@media (max-width: 768px) {
+  .category-box{
+    display: flex;
+    flex-direction: column;
+  }
+  .paper-edit-column {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+}
 
 
 /* .category-column {
