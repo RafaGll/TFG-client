@@ -161,7 +161,7 @@ const Navbar = () => {
             <Button
               color="inherit"
               component={Link}
-              to="/tutorials"
+              to="/exercises"
               className="navbar-button"
               sx={{ fontWeight: "bold" }}
             >

@@ -101,7 +101,7 @@ const Exercises = () => {
       {isMobile && (
         // <Box className="change-list justify-content-center">
           <button className="button-change-list" onClick={toggleProgress}>
-          {showProgress ? "Progreso" : "Ejercicios"}
+          {showProgress ? "Ver Lista" : "Ver Progreso"}
           </button>
         // </Box>
       )}
