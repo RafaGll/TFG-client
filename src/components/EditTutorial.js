@@ -208,14 +208,13 @@ const EditTutorial = () => {
           />
         </Box>
         <hr></hr>
-        <Box display="flex" justifyContent="space-between" marginBottom={2}>
+          <Box className="info-tutorial">
           <TextField
             label="Título"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             fullWidth
             margin="normal"
-            style={{ marginRight: "1rem" }}
           />
           <TextField
             select
@@ -224,7 +223,6 @@ const EditTutorial = () => {
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
-            style={{ marginLeft: "1rem" }}
           >
             {categories.map((cat) => (
               <MenuItem key={cat._id} value={cat._id}>
