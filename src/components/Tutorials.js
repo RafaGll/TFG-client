@@ -7,6 +7,7 @@ import {
   ArrowUpward,
   ArrowDownward,
 } from "@mui/icons-material";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { AuthContext } from "../context/AuthContext";
@@ -28,6 +29,7 @@ const Tutorials = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedTutorial, setSelectedTutorial] = useState(null);
   const [expandedTypes, setExpandedTypes] = useState({});
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isDark, setIsDark] = useState(true); // Estado para cambiar entre temas claro y oscuro
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -72,9 +74,14 @@ const Tutorials = () => {
     setSelectedTutorial(null);
   };
 
+  const handleToggleMenu = () => {
+    setIsMenuVisible(!isMenuVisible);
+  };
+
   // Función para seleccionar un tutorial
   const handleSelectTutorial = (tutorial) => {
     setSelectedTutorial(tutorial);
+    setIsMenuVisible(false);
   };
 
   const handleToggleType = (type) => {
@@ -108,7 +115,7 @@ const Tutorials = () => {
     }
   };
 
- // Función para mover un tutorial de posición y cambiar su orden
+  // Función para mover un tutorial de posición y cambiar su orden
   const handleMoveTutorial = async (tutorial, direction) => {
     const currentOrder = tutorial.order;
     const currentCategory = tutorial.category;
@@ -156,6 +163,9 @@ const Tutorials = () => {
 
   return (
     <Box className="container-tutorial">
+      <button className="toggle-menu-button" onClick={handleToggleMenu}>
+        <ArrowRightIcon />
+      </button>
       {user && user.role === "admin" && selectedTutorial && (
         <>
           <Fab
@@ -178,7 +188,7 @@ const Tutorials = () => {
           </Fab>
         </>
       )}
-      <Box className="left-column">
+      <Box className={`left-column ${isMenuVisible ? 'visible' : 'hidden'}`}>
         {Object.entries(
           categories.reduce((acc, category) => {
             if (!acc[category.type]) {
@@ -291,6 +301,9 @@ const Tutorials = () => {
                       {children}
                     </code>
                   );
+                },
+                img({ node, ...props }) {
+                  return <img className="responsive-image" {...props} />;
                 },
               }}
             >
