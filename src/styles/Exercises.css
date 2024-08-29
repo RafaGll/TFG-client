@@ -248,3 +248,23 @@
     height: 100%;
   }
 }
+@media (min-width: 768px) and (max-width: 1150px) {
+  .exercises-page{
+    padding: 65px 10px;
+  }
+  .category-filters{
+    width: 50vw;
+  }
+  .category-grid {
+    grid-template-columns: repeat(1, 1fr);
+    width: 50vw;
+  }
+  .select-category{
+    width: 100%;
+  }
+  .user-box{
+    grid-row: 1;
+    grid-column: 4/6;
+    height: 100%;
+  }
+}

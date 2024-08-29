@@ -84,31 +84,33 @@ const Navbar = () => {
               >
                 Ejercicios
               </MenuItem>
-              {user && user.role === "admin" && (
-                <>
+              {user &&
+                user.role === "admin" && [
                   <MenuItem
+                    key="add-exercise"
                     component={Link}
                     to="/add-exercise"
                     onClick={handleCloseNavMenu}
                   >
                     Añadir ejercicio
-                  </MenuItem>
+                  </MenuItem>,
                   <MenuItem
+                    key="add-tutorial"
                     component={Link}
                     to="/add-tutorial"
                     onClick={handleCloseNavMenu}
                   >
                     Añadir tutorial
-                  </MenuItem>
+                  </MenuItem>,
                   <MenuItem
+                    key="categories"
                     component={Link}
                     to="/categories"
                     onClick={handleCloseNavMenu}
                   >
                     Categorías
-                  </MenuItem>
-                </>
-              )}
+                  </MenuItem>,
+                ]}
               <Divider
                 flexItem
                 sx={{ borderColor: "black", borderStyle: "dotted", mx: 2 }}
@@ -199,7 +201,13 @@ const Navbar = () => {
               <Divider
                 orientation="vertical"
                 flexItem
-                sx={{ borderColor: "black", borderStyle: "dotted", mx: 2, marginRight: "2px", marginLeft: "2px" }}
+                sx={{
+                  borderColor: "black",
+                  borderStyle: "dotted",
+                  mx: 2,
+                  marginRight: "2px",
+                  marginLeft: "2px",
+                }}
               />
               {user ? (
                 <Button
