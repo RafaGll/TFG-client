@@ -215,34 +215,12 @@ const ExerciseDetails = () => {
 
   return (
     <Container maxWidth="lg" className="container-exercise">
-      {user && user.role === "admin" && (
-        <>
-          <Fab
-            color="error"
-            size="small"
-            aria-label="delete"
-            style={{ position: "absolute", right: "170px", top: "20px" }}
-            onClick={handleDeleteExercise}
-          >
-            <DeleteIcon />
-          </Fab>
-          <Fab
-            color="secondary"
-            size="small"
-            aria-label="edit"
-            style={{ position: "absolute", right: "220px", top: "20px" }}
-            onClick={handleEditExercise}
-          >
-            <EditIcon />
-          </Fab>
-        </>
-      )}
       <Box
         sx={{
           display: "flex",
           justifyContent: "flex-start",
         }}
-      >
+        >
         <Button
           variant="outlined"
           style={{
@@ -251,16 +229,38 @@ const ExerciseDetails = () => {
             // height: "50px",
           }}
           onClick={() => navigate("/exercises")}
-        >
+          >
           <ArrowBackIcon sx={{ fontSize: 40, color: "blue" }} />
         </Button>
         <Typography
           variant="h4"
           gutterBottom
           style={{ fontWeight: "bold", textTransform: "uppercase" }}
-        >
+          >
           {exercise.category.name}
         </Typography>
+          {user && user.role === "admin" && (
+            <div className="admin-buttons">
+              <Fab
+                color="secondary"
+                size="small"
+                aria-label="edit"
+                // style={{ position: "absolute", right: "220px", top: "20px" }}
+                onClick={handleEditExercise}
+              >
+                <EditIcon />
+              </Fab>
+              <Fab
+                color="error"
+                size="small"
+                aria-label="delete"
+                // style={{ position: "absolute", right: "170px", top: "20px" }}
+                onClick={handleDeleteExercise}
+              >
+                <DeleteIcon />
+              </Fab>
+            </div>
+          )}
       </Box>
 
       <Paper
@@ -270,7 +270,6 @@ const ExerciseDetails = () => {
       >
         <div style={{ width: "100%", marginBottom: "10px" }}>
           <Box
-           
             sx={{
               display: "flex",
               p: 1,
@@ -289,11 +288,17 @@ const ExerciseDetails = () => {
               alignItems="flex-start"
               style={{ marginLeft: "10px" }}
             >
-              <Box position="relative" display="inline-flex" marginTop={"-20px"} marginBottom={"-15px"}>
+              <Box
+                position="relative"
+                display="inline-flex"
+                marginTop={"-20px"}
+                marginBottom={"-15px"}
+                marginRight={"-30px"}
+              >
                 <CircularProgress
                   variant="determinate"
                   value={progressPercentage}
-                  size={100}
+                  size= {50}
                   color="success"
                 />
                 <Box
@@ -352,13 +357,7 @@ const ExerciseDetails = () => {
           </Box>
         )}
         {/* Mostrar las respuestas en botones */}
-        <Box
-          sx={{
-            display: "grid",
-            gap: 1,
-            gridTemplateColumns: "repeat(2, 1fr)",
-          }}
-        >
+        <Box className="answers-container">
           {shuffledAnswers.map((answer, index) => (
             <Button
               key={index}
