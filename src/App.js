@@ -22,6 +22,7 @@ import EditExercise from "./components/EditExercise";
 import Categories from "./components/Categories";
 import ExerciseDetails from "./components/ExerciseDetails";
 import ExercisesOrder from "./components/ExercisesOrder";
+import ChallengeMode from "./components/ChallengeMode";
 
 const PrivateRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
@@ -111,6 +112,14 @@ const MainApp = () => {
               <AdminRoute>
                 <ExercisesOrder />
               </AdminRoute>
+            }
+          />
+          <Route
+            path="/challenge"
+            element={
+              <PrivateRoute>
+                <ChallengeMode />
+              </PrivateRoute>
             }
           />
           <Route

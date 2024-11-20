@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import api from "../api";
 import {
@@ -13,9 +14,9 @@ import { useNavigate } from "react-router-dom";
 import ContentTutorial from "./ContentTutorial";
 import "../styles/AddTutorial.css";
 
-// Componente principal
 const AddTutorial = () => {
   const [title, setTitle] = useState("");
+  const [type, setType] = useState(""); // Nuevo estado para el tipo
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -23,7 +24,6 @@ const AddTutorial = () => {
   const baseURL = process.env.REACT_APP_API_URL;
   const contentTutorialRef = useRef();
 
-  // Hook para cargar las categorías al inicial el componente
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -37,7 +37,11 @@ const AddTutorial = () => {
     fetchCategories();
   }, [baseURL]);
 
-  // Función para enviar el formulario al servidor
+  // Restablecer la categoría cuando cambia el tipo
+  useEffect(() => {
+    setCategory("");
+  }, [type]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const contentFromEditor = contentTutorialRef.current.getContent();
@@ -49,15 +53,14 @@ const AddTutorial = () => {
     navigate("/tutorials");
   };
 
-  // Hook para habilitar/deshabilitar el botón de añadir
   useEffect(() => {
     const contentFromEditor = contentTutorialRef.current?.getContent();
-    if (title && category && contentFromEditor) {
+    if (title && type && category && contentFromEditor) {
       setIsButtonDisabled(false);
     } else {
       setIsButtonDisabled(true);
     }
-  }, [title, category, contentTutorialRef.current?.getContent()]);
+  }, [title, type, category, contentTutorialRef.current]);
 
   return (
     <Container maxWidth="lg" className="add-tutorial-container">
@@ -75,6 +78,18 @@ const AddTutorial = () => {
             fullWidth
             margin="normal"
           />
+          {/* Nuevo campo para seleccionar el tipo */}
+          <TextField
+            select
+            label="Tipo"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            fullWidth
+            margin="normal"
+          >
+            <MenuItem value="Estructura de datos">Estructura de datos</MenuItem>
+            <MenuItem value="Algoritmo">Algoritmo</MenuItem>
+          </TextField>
           <TextField
             select
             label="Categoría"
@@ -82,12 +97,21 @@ const AddTutorial = () => {
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
+            disabled={!type} // Deshabilita el campo si no se ha seleccionado un tipo
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat._id} value={cat._id}>
-                {cat.name}
+            {type ? (
+              categories
+                .filter((cat) => cat.type === type)
+                .map((cat) => (
+                  <MenuItem key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </MenuItem>
+                ))
+            ) : (
+              <MenuItem disabled value="">
+                Primero seleccione un tipo
               </MenuItem>
-            ))}
+            )}
           </TextField>
         </Box>
 
