@@ -5,9 +5,15 @@
   box-shadow: none !important;
   width: 100% !important;
   color: black !important;
+  min-height: 65px !important;
 
   /* padding-left: 0 !important;
   padding-right: 0 !important; */
+}
+.navbar-toolbar {
+  margin: 0;
+  padding: 0;
+  min-height: 65px !important;
 }
 
 .navbar-link {
@@ -34,7 +40,6 @@
   margin: 0 10px;
   border-radius: 8px;
   color: #000000;
-  font-weight: bold !important;
   transition: background-color 0.2s, color 0.2s;
   padding: 8px 10px;
 }
@@ -44,3 +49,75 @@
   color: #b99502;
 }
 
+.small-screen {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+.navbar-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.navbar-logo {
+  position:absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+  .big-screen {
+    display: none;
+  }
+  .navbar-appbar {
+    font-size: 3px !important;
+    /* padding-left: 0 !important;
+    padding-right: 0 !important; */
+  }
+  .navbar-toolbar {
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar-link {
+    display: flex;
+    align-items: center;
+    color: #000000;
+    text-decoration: none;
+    margin-right: 10px;
+    font-size: 15px;
+  }
+
+  .navbar-link:hover {
+    text-decoration: none;
+  }
+
+  .navbar-icon {
+    width: 65px;
+    height: 65px;
+    /* margin-bottom: -8px;
+    margin-top: -8px; */
+    margin: 0 -5px 0 -10px;
+  }
+
+}
+@media (min-width: 900px) and (max-width: 1150px) {
+  .navbar-icon {
+    margin-left: -13px;
+    margin-right: -10px;
+  }
+  .navbar-link{
+    margin-right: 15px;
+  }
+  .navbar-button:last-child{
+    margin-right: -20px;
+  }
+  .navbar-button {
+    font-size: 0.8rem; /* Reduce el tamaño del texto */
+    padding: 0px;
+    /* margin: 0px -1px 0px 0px !important; */
+  }
+
+  .navbar-toolbar {
+    padding: 0 8px; /* Ajusta el padding del toolbar si es necesario */
+  }
+  
+}

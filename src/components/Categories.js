@@ -103,7 +103,7 @@ const Categories = () => {
 
   return (
     <Container className="category-container" maxWidth="lg">
-      <Box display="flex">
+      <Box display="flex" className="category-box">
         {/* Columna de Estructuras de Datos */}
         <Paper elevation={3} className="paper-edit-column">
           <Box

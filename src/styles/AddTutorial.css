@@ -14,6 +14,12 @@
   display: none;
 }
 
+.info-tutorial{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 10px; 
+}
 
 .add-tutorial-paper {
 margin-bottom: 5px; 
@@ -38,7 +44,31 @@ padding: 100px 20px 20px 20px;
 
 
 .mdxeditor-toolbar {
-  left: 25%;
+  left: 20%; 
+  display: flex; 
+  flex-direction: row;
   position: fixed !important;
   top: 65px;
+}
+
+@media (max-width: 768px) {
+  .info-tutorial{
+    flex-direction: column;
+    gap: 0;
+  } 
+  .mdxeditor-toolbar {
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+  }
+}
+@media (max-width: 1000px) {
+  .mdxeditor-toolbar {
+    left: 0; 
+    display: flex; 
+    flex-direction: row;
+    position: fixed !important;
+    top: 65px;
+  }
 }

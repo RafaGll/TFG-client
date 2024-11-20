@@ -11,6 +11,7 @@ import {
   Grid,
   Typography,
   IconButton,
+  useMediaQuery,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -23,6 +24,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
@@ -38,28 +40,30 @@ function Login() {
         component="main"
         sx={{
           height: "100vh",
-          padding: "80px 150px",
+          padding: isMobile ? "20px" : "80px 150px",
           backgroundColor: "#FFFAE5",
         }}
       >
         <CssBaseline />
-        <Grid
-          component={Paper}
-          elevation={24}
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          sx={{
-            backgroundImage: 'url("/login.jpg")',
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+        {!isMobile && (
+          <Grid
+            component={Paper}
+            elevation={24}
+            item
+            xs={false}
+            sm={4}
+            md={7}
+            sx={{
+              backgroundImage: 'url("/login.jpg")',
+              backgroundColor: (t) =>
+                t.palette.mode === "light"
+                  ? t.palette.grey[50]
+                  : t.palette.grey[900],
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        )}
         <Grid
           item
           xs={12}
@@ -68,17 +72,18 @@ function Login() {
           component={Paper}
           elevation={24}
           square
+          sx={{
+            width: isMobile ? "100%" : "auto",
+            height: isMobile ? "100%" : "auto",
+          }}
         >
           <Box sx={{ position: "relative", height: "100%" }}>
-            <IconButton
-              sx={{ color: "black", fontSize: "large" }}
-            href="/"
-            >
+            <IconButton sx={{ color: "black", fontSize: "large" }} href="/">
               <ArrowBackIcon style={{ fontSize: "large" }} />
             </IconButton>
             <Box
               sx={{
-                my: 8,
+                my: isMobile ? 4 : 8,
                 mx: 4,
                 display: "flex",
                 flexDirection: "column",
@@ -88,7 +93,7 @@ function Login() {
               <img
                 src="/icon2.png"
                 alt="App Logo"
-                style={{ width: 150, height: 150 }}
+                style={{ width: isMobile ? 100 : 150, height: isMobile ? 100 : 150 }}
                 onClick={() => navigate("/")}
               />
               <Typography component="h1" variant="h5">

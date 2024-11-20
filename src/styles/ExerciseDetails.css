@@ -46,6 +46,28 @@
   display: none;
 }
 
+.answers-container {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.admin-buttons {
+  gap: 10px;
+  display: flex;
+  margin: -5px 0 0 20px
+}
+@media screen and (max-width: 650px) {
+  .answers-container {
+    grid-template-columns: 1fr;
+  }
+  circular-progress {
+    margin: 0 auto;
+    height: 100px;
+  }
+  
+}
+
 
 /* AddExercise */
 .add-exercise-container {

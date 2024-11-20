@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Container, Typography, Grid, Box, ButtonGroup } from "@mui/material";
 import api from "../api";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/Exercises.css";
 
 const Exercises = () => {
@@ -96,14 +96,21 @@ const Exercises = () => {
     }
   };
 
+  const handleChallengeClick = () => {
+    navigate("/challenge");
+  };
+
   return (
     <Box className="exercises-page">
       {isMobile && (
-        // <Box className="change-list justify-content-center">
-          <button className="button-change-list" onClick={toggleProgress}>
-          {showProgress ? "Progreso" : "Ejercicios"}
+        <div className="bottom-buttons">
+          <button className="button-left" onClick={toggleProgress}>
+            {showProgress ? "Ver Lista" : "Ver Progreso"}
           </button>
-        // </Box>
+          <button className="button-right" onClick={handleChallengeClick}>
+            Challenge
+          </button>
+        </div>
       )}
 
       {/* Mostrar siempre la lista de ejercicios en escritorio y tablet, y alternar en móvil */}
@@ -133,9 +140,7 @@ const Exercises = () => {
               Algoritmos
             </button>
           </Box>
-          <Grid
-          className="category-grid"
-          >
+          <Grid className="category-grid">
             {categories.length > 0 ? (
               categories
                 .filter((c) => c.type === selectedType)
@@ -163,9 +168,10 @@ const Exercises = () => {
 
       {/* Mostrar siempre el progreso en escritorio y tablet, y alternar en móvil */}
       {(!isMobile || showProgress) && (
-        <Container
-          className="user-box"
-        >
+        <Container className="user-box">
+          <button className="challenge-button" onClick={handleChallengeClick}>
+            Challenge
+          </button>
           <Typography variant="h5" gutterBottom>
             Mi Progreso
           </Typography>

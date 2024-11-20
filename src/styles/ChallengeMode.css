@@ -1,0 +1,63 @@
+/* ChallengeMode.css */
+
+.challenge-container {
+  padding: 65px 0 10px 5px;
+  height: 100vh; 
+}
+
+.challenge-title {
+  margin-bottom: 1rem;
+}
+
+.exercise-paper {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.exercise-problem {
+  margin-bottom: 1rem;
+}
+
+.exercise-image {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+.exercise-images-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.exercise-image-multiple {
+  max-width: 50%;
+}
+
+.answer-button {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.hint-text {
+  margin-top: 8px;
+}
+
+.result-dialog-content {
+  padding: 16px;
+}
+
+.result-dialog-actions {
+  justify-content: space-between;
+}
+
+.ver-resultados-button {
+  margin-top: 16px;
+  margin-bottom: 10px;
+}
+
+/* Habilitar el desplazamiento en la página */
+body {
+  overflow-y: auto;
+}
