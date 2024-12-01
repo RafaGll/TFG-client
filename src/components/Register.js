@@ -20,6 +20,7 @@ import axios from "axios";
 const defaultTheme = createTheme();
 
 function Register() {
+  const baseURL = process.env.REACT_APP_API_URL;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,18 +34,14 @@ function Register() {
   // Validar que las contraseñas coincidan
   useEffect(() => {
     setPasswordMatch(password === confirmPassword);
-  }, [password, confirmPassword]);
-
-  // Validar el formulario
-  useEffect(() => {
     setFormValid(
       username !== "" &&
       password !== "" &&
       confirmPassword !== "" &&
-      passwordMatch &&
+      password === confirmPassword &&
       usernameError === ""
     );
-  }, [username, password, confirmPassword, passwordMatch, usernameError]);
+  }, [username, password, confirmPassword, usernameError]);
 
   // Verificar si el nombre de usuario está disponible
   const handleCheckUsername = async () => {
@@ -53,7 +50,7 @@ function Register() {
       return;
     }
     try {
-      await axios.post("/api/users/check-username", { username });
+      await axios.post(`${baseURL}/users/check-username`, { username });
       setUsernameError(""); // Si está disponible, limpiar errores
     } catch (err) {
       setUsernameError(
@@ -155,10 +152,7 @@ function Register() {
                   autoComplete="username"
                   autoFocus
                   value={username}
-                  onChange={(e) => {
-                    setUsername(e.target.value);
-                    setUsernameError(""); // Reiniciar error mientras escribe
-                  }}
+                  onChange={(e) => setUsername(e.target.value)}
                   onBlur={handleCheckUsername} // Verificar al perder el foco
                   error={!!usernameError}
                   helperText={usernameError}
