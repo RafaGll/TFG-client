@@ -33,14 +33,18 @@ function Register() {
   // Validar que las contraseñas coincidan
   useEffect(() => {
     setPasswordMatch(password === confirmPassword);
+  }, [password, confirmPassword]);
+
+  // Validar el formulario
+  useEffect(() => {
     setFormValid(
       username !== "" &&
       password !== "" &&
       confirmPassword !== "" &&
-      password === confirmPassword &&
+      passwordMatch &&
       usernameError === ""
     );
-  }, [username, password, confirmPassword, usernameError]);
+  }, [username, password, confirmPassword, passwordMatch, usernameError]);
 
   // Verificar si el nombre de usuario está disponible
   const handleCheckUsername = async () => {
@@ -151,7 +155,10 @@ function Register() {
                   autoComplete="username"
                   autoFocus
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setUsernameError(""); // Reiniciar error mientras escribe
+                  }}
                   onBlur={handleCheckUsername} // Verificar al perder el foco
                   error={!!usernameError}
                   helperText={usernameError}
