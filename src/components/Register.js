@@ -15,14 +15,15 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import axios from "axios";
 
 const defaultTheme = createTheme();
 
-// Componente de registro
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [usernameError, setUsernameError] = useState(""); // Estado para el error del nombre de usuario
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [formValid, setFormValid] = useState(false);
   const { register } = useContext(AuthContext);
@@ -36,16 +37,37 @@ function Register() {
       username !== "" &&
       password !== "" &&
       confirmPassword !== "" &&
-      password === confirmPassword
+      password === confirmPassword &&
+      usernameError === ""
     );
-  }, [username, password, confirmPassword]);
+  }, [username, password, confirmPassword, usernameError]);
 
-  // Función para manejar el envío del formulario
+  // Verificar si el nombre de usuario está disponible
+  const handleCheckUsername = async () => {
+    if (!username) {
+      setUsernameError("El nombre de usuario no puede estar vacío.");
+      return;
+    }
+    try {
+      await axios.post("/api/users/check-username", { username });
+      setUsernameError(""); // Si está disponible, limpiar errores
+    } catch (err) {
+      setUsernameError(
+        err.response?.data?.message || "Error al verificar el nombre de usuario."
+      );
+    }
+  };
+
+  // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formValid) {
-      await register(username, password);
-      navigate("/");
+      try {
+        await register(username, password);
+        navigate("/");
+      } catch (err) {
+        console.error("Error en el registro:", err);
+      }
     }
   };
 
@@ -124,18 +146,21 @@ function Register() {
                   margin="normal"
                   fullWidth
                   id="username"
-                  label="Username"
+                  label="Nombre de usuario"
                   name="username"
                   autoComplete="username"
                   autoFocus
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  onBlur={handleCheckUsername} // Verificar al perder el foco
+                  error={!!usernameError}
+                  helperText={usernameError}
                 />
                 <TextField
                   margin="normal"
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Contraseña"
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -147,7 +172,7 @@ function Register() {
                   margin="normal"
                   fullWidth
                   name="confirmPassword"
-                  label="Confirm Password"
+                  label="Confirmar contraseña"
                   type="password"
                   id="confirmPassword"
                   autoComplete="new-password"
