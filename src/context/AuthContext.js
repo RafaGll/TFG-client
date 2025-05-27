@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import api from "../api";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 const baseURL = process.env.REACT_APP_API_URL;
 const AuthContext = createContext();
 
