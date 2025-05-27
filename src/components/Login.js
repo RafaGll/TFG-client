@@ -27,6 +27,17 @@ function Login() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      // credentialResponse.credential es el ID token de Google
+      await loginWithGoogle(credentialResponse.credential);
+      navigate("/");
+    } catch (err) {
+      console.error("Error en login con Google:", err);
+   }
+ };
+  // -------------------------------------------------
+
   // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -142,7 +153,7 @@ function Login() {
                     console.error("Google Login Failed");
                   }}
                   />
-                  
+
                 <Grid container justifyContent="center">
                   <Grid item>
                     <Link href="/register" variant="body2">
