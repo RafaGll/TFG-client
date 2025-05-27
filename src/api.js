@@ -3,6 +3,15 @@ import axios from "axios";
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || "http://localhost:3000", // Usa la variable de entorno si está definida, de lo contrario usa localhost
 });
+// Interceptor de petición: adjunta el JWT si existe
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+  
 
 // Agregar un interceptor de respuesta
 api.interceptors.response.use(

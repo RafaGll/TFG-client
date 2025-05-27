@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {  GoogleLogin } from "@react-oauth/google";
 import {
   Button,
   CssBaseline,
@@ -22,7 +23,7 @@ const defaultTheme = createTheme();
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useContext(AuthContext);
+  const { login, loginWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -135,6 +136,13 @@ function Login() {
                 >
                   Aceptar
                 </Button>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => {
+                    console.error("Google Login Failed");
+                  }}
+                  />
+                  
                 <Grid container justifyContent="center">
                   <Grid item>
                     <Link href="/register" variant="body2">

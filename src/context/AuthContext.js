@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import api from "../api";
-import { jwtDecode } from "jwt-decode"; // Asegúrate de que jwtDecode esté correctamente importado
+import jwtDecode from "jwt-decode";
 const baseURL = process.env.REACT_APP_API_URL;
 const AuthContext = createContext();
 
@@ -69,6 +69,26 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+    // -------------------------------------------------
+  // Login usando token de Google
+  const loginWithGoogle = async (googleToken) => {
+    try {
+      const res = await api.post(`${baseURL}/auth/google`, { token: googleToken });
+      const jwt = res.data.token;
+      // guarda el JWT
+      setAuthToken(jwt);
+      localStorage.setItem("authToken", jwt);
+      // decodifica y almacena usuario
+      const { user: u } = jwtDecode(jwt);
+      setUser(u);
+    } catch (err) {
+      console.error("Error en loginWithGoogle:", err);
+      throw err;
+    }
+  };
+  // -------------------------------------------------
+
+
   const logout = () => {
     setAuthToken(null);
     setUser(null);
@@ -76,7 +96,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loginWithGoogle }}>
       {children}
     </AuthContext.Provider>
   );
