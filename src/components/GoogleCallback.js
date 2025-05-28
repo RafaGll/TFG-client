@@ -1,3 +1,4 @@
+// src/components/GoogleCallback.jsx
 import React, { useEffect, useContext } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
@@ -8,9 +9,9 @@ export default function GoogleCallback() {
   const { loginWithGoogle } = useContext(AuthContext);
 
   useEffect(() => {
-    const token = params.get('credential');
-    if (token) {
-      loginWithGoogle(token)
+    const credential = params.get('credential');
+    if (credential) {
+      loginWithGoogle(credential)
         .then(() => navigate('/'))
         .catch(() => navigate('/login'));
     } else {

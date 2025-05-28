@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import {  useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import {
   Button,
   CssBaseline,
@@ -27,14 +27,14 @@ function Login() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
+  // Hook para iniciar el flujo de redirección con Google
   const loginRedirect = useGoogleLogin({
     flow: "implicit",
     ux_mode: "redirect",
     redirect_uri: window.location.origin + "/auth/google/callback",
-  }); 
-  // -------------------------------------------------
+  });
 
-  // Función para manejar el envío del formulario
+  // Función para manejar el envío del formulario tradicional
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(username, password);
@@ -143,17 +143,20 @@ function Login() {
                 >
                   Aceptar
                 </Button>
+                {/* Botón para iniciar sesión con Google vía redirect */}
                 <Button
                   fullWidth
                   variant="contained"
                   sx={{ mt: 2, mb: 2 }}
-                  onClick={() => loginRedirect()} 
-                  >Iniciar sesión con Google</Button>
+                  onClick={() => loginRedirect()}
+                >
+                  Iniciar sesión con Google
+                </Button>
 
                 <Grid container justifyContent="center">
                   <Grid item>
                     <Link href="/register" variant="body2">
-                      {"¿No tienes cuenta? Registrate"}
+                      {"¿No tienes cuenta? Regístrate"}
                     </Link>
                   </Grid>
                 </Grid>
