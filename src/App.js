@@ -40,6 +40,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/exercises/:id"

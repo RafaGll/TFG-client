@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import {  GoogleLogin } from "@react-oauth/google";
+import {  useGoogleLogin } from "@react-oauth/google";
 import {
   Button,
   CssBaseline,
@@ -27,15 +27,11 @@ function Login() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      // credentialResponse.credential es el ID token de Google
-      await loginWithGoogle(credentialResponse.credential);
-      navigate("/");
-    } catch (err) {
-      console.error("Error en login con Google:", err);
-   }
- };
+  const loginRedirect = useGoogleLogin({
+    flow: "implicit",
+    ux_mode: "redirect",
+    redirect_uri: window.location.origin + "/auth/google/callback",
+  }); 
   // -------------------------------------------------
 
   // Función para manejar el envío del formulario
@@ -147,12 +143,12 @@ function Login() {
                 >
                   Aceptar
                 </Button>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => {
-                    console.error("Google Login Failed");
-                  }}
-                  />
+                <Button
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 2, mb: 2 }}
+                  onClick={() => loginRedirect()} 
+                  >Iniciar sesión con Google</Button>
 
                 <Grid container justifyContent="center">
                   <Grid item>
