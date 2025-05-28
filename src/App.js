@@ -23,6 +23,7 @@ import Categories from "./components/Categories";
 import ExerciseDetails from "./components/ExerciseDetails";
 import ExercisesOrder from "./components/ExercisesOrder";
 import ChallengeMode from "./components/ChallengeMode";
+import GoogleCallback from "./components/GoogleCallback";
 
 const PrivateRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
