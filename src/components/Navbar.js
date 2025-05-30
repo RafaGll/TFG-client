@@ -14,7 +14,6 @@ import { Divider } from "@mui/material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { useGoogleLogin } from "@react-oauth/google";
-import { AuthContext } from "../context/AuthContext";
 
 // Componente de la barra de navegación
 const Navbar = () => {
