@@ -43,7 +43,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   const shouldHideNavbar = location.pathname.startsWith("/exercises/");
@@ -137,22 +137,13 @@ const Navbar = () => {
                   Cerrar Sesión
                 </MenuItem>
               ) : (
-                <>
-                  <MenuItem
-                    component={Link}
-                    to="/login"
-                    onClick={handleCloseNavMenu}
-                  >
-                    Login
-                  </MenuItem>
-                  <MenuItem
-                    component={Link}
-                    to="/register"
-                    onClick={handleCloseNavMenu}
-                  >
-                    Registro
-                  </MenuItem>
-                </>
+                <GoogleLogin
+                  onSuccess={credentialResponse => {
+                    console.log("Google ID Token:", credentialResponse.credential);
+                    loginWithGoogle(credentialResponse.credential);
+                  }}
+                  onError={() => console.error("Error al autenticar con Google")}
+                  />
               )}
             </Menu>
           </Box>
