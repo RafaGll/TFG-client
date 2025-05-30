@@ -1,7 +1,10 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:3000", // Usa la variable de entorno si está definida, de lo contrario usa localhost
+  baseURL:
+    process.env.NODE_ENV === "production"
+      ? "/api"
+      : process.env.REACT_APP_API_URL || "http://localhost:3000",
 });
 // Interceptor de petición: adjunta el JWT si existe
 api.interceptors.request.use(config => {

@@ -23,7 +23,6 @@ import Categories from "./components/Categories";
 import ExerciseDetails from "./components/ExerciseDetails";
 import ExercisesOrder from "./components/ExercisesOrder";
 import ChallengeMode from "./components/ChallengeMode";
-import GoogleCallback from "./components/GoogleCallback";
 
 const PrivateRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
@@ -41,7 +40,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/auth/google/callback" element={<GoogleCallback />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/exercises/:id"

@@ -27,12 +27,15 @@ function Login() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  // Hook para iniciar el flujo de redirección con Google
-  const loginRedirect = useGoogleLogin({
-    flow: "implicit",
-    ux_mode: "redirect",
-    redirect_uri: window.location.origin + "/auth/google/callback",
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (credResponse) => {
+      if (credResponse.credential) {
+        loginWithGoogle(credResponse.credential)
+      }
+    },
+    onError: () => console.error("Error al autenticar con Google"),
   });
+
 
   // Función para manejar el envío del formulario tradicional
   const handleSubmit = async (e) => {
@@ -146,12 +149,10 @@ function Login() {
                 {/* Botón para iniciar sesión con Google vía redirect */}
                 <Button
                   fullWidth
-                  variant="contained"
+                  variant="outlined"
                   sx={{ mt: 2, mb: 2 }}
-                  onClick={() => loginRedirect()}
-                >
-                  Iniciar sesión con Google
-                </Button>
+                  onClick={() => googleLogin()}
+                  >Iniciar sesión con Google</Button>
 
                 <Grid container justifyContent="center">
                   <Grid item>
