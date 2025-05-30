@@ -21,19 +21,14 @@ const defaultTheme = createTheme();
 
 // Componente de la página de inicio de sesión
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const { loginWithGoogle } = useContext(AuthContext);
 
   // Función para manejar el envío del formulario tradicional
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await login(username, password);
-    navigate("/");
-  };
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>
