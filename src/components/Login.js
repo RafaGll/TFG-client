@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   Button,
   CssBaseline,
@@ -23,19 +23,10 @@ const defaultTheme = createTheme();
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login, loginWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
   const isMobile = useMediaQuery("(max-width:600px)");
 
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (credResponse) => {
-      if (credResponse.credential) {
-        loginWithGoogle(credResponse.credential)
-      }
-    },
-    onError: () => console.error("Error al autenticar con Google"),
-  });
-
+  const { loginWithGoogle } = useContext(AuthContext);
 
   // Función para manejar el envío del formulario tradicional
   const handleSubmit = async (e) => {
@@ -147,20 +138,13 @@ function Login() {
                   Aceptar
                 </Button> */}
                 {/* Botón para iniciar sesión con Google vía redirect */}
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  sx={{ mt: 2, mb: 2 }}
-                  onClick={() => googleLogin()}
-                  >Iniciar sesión con Google</Button>
-
-                <Grid container justifyContent="center">
-                  <Grid item>
-                    <Link href="/register" variant="body2">
-                      {"¿No tienes cuenta? Regístrate"}
-                    </Link>
-                  </Grid>
-                </Grid>
+                <GoogleLogin
+                  onSuccess={credentialResponse => {
+                    console.log("Google ID Token:", credentialResponse.credential);
+                    loginWithGoogle(credentialResponse.credential);
+                  }}
+                  onError={() => console.error("Error al autenticar con Google")}
+                />
               </Box>
             </Box>
           </Box>

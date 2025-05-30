@@ -13,7 +13,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { Divider } from "@mui/material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { useGoogleLogin } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 
 // Componente de la barra de navegación
@@ -25,14 +24,7 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const { loginWithGoogle } = useContext(AuthContext);
-  const googleLogin = useGoogleLogin({
-    onSuccess: (credentialResponse) => {
-      if (credentialResponse.credential) {
-        loginWithGoogle(credentialResponse.credential);
-      }
-    },
-    onError: () => console.error("Error al autenticar con Google"),
-  });
+  
 
   const handleOpenNavMenu = (event) => {
     setAnchorEl(event.currentTarget);
