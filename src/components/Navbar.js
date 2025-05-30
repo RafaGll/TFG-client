@@ -13,6 +13,8 @@ import MenuItem from "@mui/material/MenuItem";
 import { Divider } from "@mui/material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { useGoogleLogin } from "@react-oauth/google";
+import { AuthContext } from "../context/AuthContext";
 
 // Componente de la barra de navegación
 const Navbar = () => {
@@ -21,6 +23,16 @@ const Navbar = () => {
   const location = useLocation();
 
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const { loginWithGoogle } = useContext(AuthContext);
+  const googleLogin = useGoogleLogin({
+    onSuccess: (credentialResponse) => {
+      if (credentialResponse.credential) {
+        loginWithGoogle(credentialResponse.credential);
+      }
+    },
+    onError: () => console.error("Error al autenticar con Google"),
+  });
 
   const handleOpenNavMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -218,24 +230,30 @@ const Navbar = () => {
                   Cerrar Sesión
                 </Button>
               ) : (
-                <>
-                  <Button
-                    className="navbar-button"
-                    component={Link}
-                    to="/login"
-                    color="inherit"
-                  >
-                    Login
-                  </Button>
-                  <Button
-                    className="navbar-button"
-                    component={Link}
-                    to="/register"
-                    color="inherit"
-                  >
-                    Registro
-                  </Button>
-                </>
+                <button
+                  // className="navbar-button"
+                  onClick={() => googleLogin()}
+                >
+                  Iniciar Sesión con Google
+                </button>
+                // <>
+                //   <Button
+                //     className="navbar-button"
+                //     component={Link}
+                //     to="/login"
+                //     color="inherit"
+                //   >
+                //     Login
+                //   </Button>
+                //   <Button
+                //     className="navbar-button"
+                //     component={Link}
+                //     to="/register"
+                //     color="inherit"
+                //   >
+                //     Registro
+                //   </Button>
+                // </>
               )}
             </Box>
           </Box>
@@ -243,121 +261,6 @@ const Navbar = () => {
       </Container>
     </AppBar>
 
-    // <AppBar position="fixed" className={`navbar-appbar`}>
-    //   <Container maxWidth="xl">
-    //   <Toolbar disableGutters className="navbar-toolbar">
-    //     <Typography variant="h6">
-    //       <Link to="/" className="navbar-link">
-    //         <img src="/icon2.png" alt="icon" className="navbar-icon" />
-    //         TFG
-    //       </Link>
-    //     </Typography>
-
-    //     <div className="big-screen">
-    //       <Box display="flex" flexGrow={1} alignItems="center">
-    //         <Button
-    //           color="inherit"
-    //           component={Link}
-    //           to="/tutorials"
-    //           className="navbar-button"
-    //         >
-    //           Tutoriales
-    //         </Button>
-    //         <Button
-    //           color="inherit"
-    //           component={Link}
-    //           to="/exercises"
-    //           className="navbar-button"
-    //         >
-    //           Ejercicios
-    //         </Button>
-    //       </Box>
-
-    //       <Box display="flex" alignItems="center">
-    //         {user ? (
-    //           <>
-    //             {user.role === "admin" && (
-    //               <>
-    //                 <Button
-    //                   color="inherit"
-    //                   component={Link}
-    //                   to="/add-exercise"
-    //                   className="navbar-button"
-    //                 >
-    //                   Añadir ejercicio
-    //                 </Button>
-    //                 <Button
-    //                   color="inherit"
-    //                   component={Link}
-    //                   to="/add-tutorial"
-    //                   className="navbar-button"
-    //                 >
-    //                   Añadir tutorial
-    //                 </Button>
-    //                 <Button
-    //                   color="inherit"
-    //                   component={Link}
-    //                   to="/categories"
-    //                   className="navbar-button"
-    //                 >
-    //                   Categorías
-    //                 </Button>
-    //               </>
-    //             )}
-    //             <Button
-    //               color="inherit"
-    //               onClick={handleLogout}
-    //               className="navbar-button"
-    //             >
-    //               Cerrar Sesión
-    //             </Button>
-    //           </>
-    //         ) : (
-    //           <>
-    //             <Button
-    //               color="inherit"
-    //               component={Link}
-    //               to="/login"
-    //               className="navbar-button"
-    //             >
-    //               Login
-    //             </Button>
-    //             <Button
-    //               color="inherit"
-    //               component={Link}
-    //               to="/register"
-    //               className="navbar-button"
-    //             >
-    //               Registro
-    //             </Button>
-    //           </>
-    //         )}
-    //       </Box>
-    //     </div>
-
-    //     <Hamburger className="burger" toggled={isOpen} toggle={setOpen} direction="left" />
-    //   </Toolbar>
-    //   {isOpen && (
-    //     <div>
-    //       <Button
-    //         color="inherit"
-    //         component={Link}
-    //         to="/tutorials"
-    //         className="navbar-button"
-    //       >
-    //         Tutoriales
-    //       </Button>
-    //       <Button
-    //         color="inherit"
-    //         component={Link}
-    //         to="/exercises"
-    //         className="navbar-button"
-    //       >
-    //         Ejercicios
-    //       </Button>
-    //     </div>
-    //   )}
-    // </AppBar>
   );
 };
 

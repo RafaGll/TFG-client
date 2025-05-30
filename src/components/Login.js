@@ -116,7 +116,7 @@ function Login() {
                 onSubmit={handleSubmit}
                 sx={{ mt: 1 }}
               >
-                <TextField
+                {/* <TextField
                   margin="normal"
                   fullWidth
                   id="username"
@@ -145,7 +145,7 @@ function Login() {
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Aceptar
-                </Button>
+                </Button> */}
                 {/* Botón para iniciar sesión con Google vía redirect */}
                 <Button
                   fullWidth
