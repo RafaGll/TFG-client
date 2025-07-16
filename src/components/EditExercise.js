@@ -17,10 +17,9 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import imageCompression from "browser-image-compression";
 import "../styles/ExerciseDetails.css";
 
-// Componente principal
+// Componente principal 
 const EditExercise = () => {
   const [problem, setProblem] = useState("");
-  const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [level, setLevel] = useState("");
@@ -38,18 +37,13 @@ const EditExercise = () => {
   const { id } = useParams(); // Obtener el ID del ejercicio de la URL
   const baseURL = process.env.REACT_APP_API_URL;
 
-  // Convierte índice a letra (a, b, c, d)
+  // Función para convertir un índice a una letra
   const indexToLetter = (index) => {
     const letters = "abcd";
     return letters[index];
   };
 
-  // Al cambiar el tipo, resetear la categoría
-  useEffect(() => {
-    setCategory("");
-  }, [type]);
-
-  // Cargar categorías disponibles
+  // Hook para cargar las categorías y el ejercicio al inicial el componente
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -59,10 +53,11 @@ const EditExercise = () => {
         console.error("Error fetching categories:", error);
       }
     };
+
     fetchCategories();
   }, [baseURL]);
 
-  // Cargar ejercicio existente al iniciar el componente
+  // Hook para cargar el ejercicio al inicial el componente
   useEffect(() => {
     const fetchExercise = async () => {
       try {
@@ -82,18 +77,11 @@ const EditExercise = () => {
         console.error("Error fetching exercise:", error);
       }
     };
+
     fetchExercise();
   }, [baseURL, id]);
 
-  // Cuando se tienen categorías y categoría, precargar el tipo correspondiente
-  useEffect(() => {
-    if (categories.length && category) {
-      const found = categories.find((cat) => cat._id === category);
-      if (found) setType(found.type);
-    }
-  }, [categories, category]);
-
-  // Envío del formulario actualizado
+  // Función para enviar el formulario al servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
     const mappedLevel = level === "Fácil" ? 1 : 2;
@@ -113,7 +101,7 @@ const EditExercise = () => {
     }
   };
 
-  // Subir imagen (comprimir antes)
+  // Función para comprimir y subir las imágenes al servidor
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file && images.length < 4) {
@@ -122,6 +110,7 @@ const EditExercise = () => {
         maxWidthOrHeight: 1920,
         useWebWorker: true,
       };
+
       try {
         const compressedFile = await imageCompression(file, options);
         const reader = new FileReader();
@@ -137,12 +126,12 @@ const EditExercise = () => {
     }
   };
 
-  // Eliminar imagen existente
+  // Función para eliminar una imagen
   const handleImageRemove = (index) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  // Validar formulario
+  // Función para validar el formulario
   const isFormValid = () => {
     return (
       problem &&
@@ -172,36 +161,19 @@ const EditExercise = () => {
           />
           <TextField
             select
-            label="Tipo"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            fullWidth
-            margin="normal"
-            required
-          >
-            <MenuItem value="Algoritmo">Algoritmo</MenuItem>
-            <MenuItem value="Estructura de datos">Estructura de datos</MenuItem>
-          </TextField>
-
-          <TextField
-            select
             label="Categoría"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
             required
-            disabled={!type}
           >
-            {categories
-              .filter((cat) => cat.type === type)
-              .map((cat) => (
-                <MenuItem key={cat._id} value={cat._id}>
-                  {cat.name}
-                </MenuItem>
-              ))}
+            {categories.map((cat) => (
+              <MenuItem key={cat._id} value={cat._id}>
+                {cat.name}
+              </MenuItem>
+            ))}
           </TextField>
-
           <TextField
             select
             label="Dificultad"
