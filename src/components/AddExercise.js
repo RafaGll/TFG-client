@@ -20,6 +20,7 @@ import "../styles/ExerciseDetails.css";
 // Componente principal
 const AddExercise = () => {
   const [problem, setProblem] = useState("");
+  const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [level, setLevel] = useState("");
@@ -40,6 +41,10 @@ const AddExercise = () => {
     const letters = "abcd";
     return letters[index];
   };
+
+  useEffect(() => {
+    setCategory("");
+  }, [type]);
 
   // Hook para cargar las categorías al inicial el componente
   useEffect(() => {
@@ -134,19 +139,36 @@ const AddExercise = () => {
           />
           <TextField
             select
+            label="Tipo"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            fullWidth
+            margin="normal"
+            required
+          >
+            <MenuItem value="Algoritmo">Algoritmo</MenuItem>
+            <MenuItem value="Estructura de datos">Estructura de datos</MenuItem>
+          </TextField>
+
+          <TextField
+            select
             label="Categoría"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
             required
+            disabled={!type}
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat._id} value={cat._id}>
-                {cat.name}
-              </MenuItem>
-            ))}
+            {categories
+              .filter((cat) => cat.type === type)
+              .map((cat) => (
+                <MenuItem key={cat._id} value={cat._id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
           </TextField>
+
           <TextField
             select
             label="Dificultad"

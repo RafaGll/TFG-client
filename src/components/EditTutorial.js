@@ -38,6 +38,7 @@ import {
   StrikeThroughSupSubToggles,
   ListsToggle,
 } from "@mdxeditor/editor";
+import { use } from "react";
 
 const defaultSnippetContent = `
 export default function App() {
@@ -71,6 +72,7 @@ const simpleSandpackConfig = {
 const EditTutorial = () => {
   const { id } = useParams();
   const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [content, setContent] = useState("");
@@ -78,6 +80,10 @@ const EditTutorial = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
+
+  useEffect(() => {
+    setCategory("");
+  }, [type]);
 
   // Hook para cargar el tutorial y las categorías al inicial el componente
   useEffect(() => {
@@ -130,12 +136,23 @@ const EditTutorial = () => {
   if (isLoading) {
     return <Typography>Cargando...</Typography>;
   }
+  useEffect(() => {
+  if (categories.length && category) {
+    const found = categories.find((cat) => cat._id === category);
+    if (found) setType(found.type);
+  }
+}, [categories, category]);
+
 
   return (
     <Container maxWidth="lg" className="add-tutorial-container">
       <Paper elevation={3} className="add-tutorial-paper">
         <hr></hr>
-        <Box className="add-tutorial-editor" marginBottom={"-20px"} marginTop={"-20px"}>
+        <Box
+          className="add-tutorial-editor"
+          marginBottom={"-20px"}
+          marginTop={"-20px"}
+        >
           <MDXEditor
             markdown={content}
             onChange={setContent}
@@ -208,7 +225,7 @@ const EditTutorial = () => {
           />
         </Box>
         <hr></hr>
-          <Box className="info-tutorial">
+        <Box className="info-tutorial">
           <TextField
             label="Título"
             value={title}
@@ -218,17 +235,31 @@ const EditTutorial = () => {
           />
           <TextField
             select
+            label="Tipo"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            fullWidth
+            margin="normal"
+          >
+            <MenuItem value="Estructura de datos">Estructura de datos</MenuItem>
+            <MenuItem value="Algoritmo">Algoritmo</MenuItem>
+          </TextField>
+          <TextField
+            select
             label="Categoría"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
+            disabled={!type}
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat._id} value={cat._id}>
-                {cat.name}
-              </MenuItem>
-            ))}
+            {categories
+              .filter((cat) => cat.type === type)
+              .map((cat) => (
+                <MenuItem key={cat._id} value={cat._id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
           </TextField>
         </Box>
 
