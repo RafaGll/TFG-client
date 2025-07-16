@@ -42,11 +42,12 @@ const AddExercise = () => {
     return letters[index];
   };
 
+  // Al cambiar el tipo, reiniciar la categoría
   useEffect(() => {
     setCategory("");
   }, [type]);
 
-  // Hook para cargar las categorías al inicial el componente
+  // Cargar categorías disponibles
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -56,11 +57,10 @@ const AddExercise = () => {
         console.error("Error fetching categories:", error);
       }
     };
-
     fetchCategories();
   }, [baseURL]);
 
-  // Función para enviar el formulario al servidor
+  // Envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     const mappedLevel = level === "Fácil" ? 1 : 2;
@@ -80,7 +80,7 @@ const AddExercise = () => {
     }
   };
 
-  // Función para comprimir y subir las imágenes al servidor
+  // Subir imagen (comprimir)
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file && images.length < 4) {
@@ -89,7 +89,6 @@ const AddExercise = () => {
         maxWidthOrHeight: 1920,
         useWebWorker: true,
       };
-
       try {
         const compressedFile = await imageCompression(file, options);
         const reader = new FileReader();
@@ -105,11 +104,12 @@ const AddExercise = () => {
     }
   };
 
-  // Función para eliminar una imagen tras subirla
+  // Eliminar imagen
   const handleImageRemove = (index) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
+  // Validar formulario
   const isFormValid = () => {
     return (
       problem &&

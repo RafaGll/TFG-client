@@ -38,7 +38,6 @@ import {
   StrikeThroughSupSubToggles,
   ListsToggle,
 } from "@mdxeditor/editor";
-import { use } from "react";
 
 const defaultSnippetContent = `
 export default function App() {
@@ -51,7 +50,6 @@ export default function App() {
 }
 `.trim();
 
-// Configuración de Sandpack para el editor de código
 const simpleSandpackConfig = {
   defaultPreset: "react",
   presets: [
@@ -81,11 +79,12 @@ const EditTutorial = () => {
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
 
+  // Reset de categoría al cambiar el tipo
   useEffect(() => {
     setCategory("");
   }, [type]);
 
-  // Hook para cargar el tutorial y las categorías al inicial el componente
+  // Cargar tutorial y categorías al iniciar
   useEffect(() => {
     const fetchTutorial = async () => {
       try {
@@ -98,8 +97,6 @@ const EditTutorial = () => {
         console.error("Error fetching tutorial:", error);
       }
     };
-
-    // Función para obtener todas las categorías del backend
     const fetchCategories = async () => {
       try {
         const response = await api.get(`${baseURL}/categories`);
@@ -108,12 +105,11 @@ const EditTutorial = () => {
         console.error("Error fetching categories:", error);
       }
     };
-
     fetchTutorial();
     fetchCategories();
   }, [id, baseURL]);
 
-  // Función para enviar el formulario al servidor
+  // Envío del formulario actualizado
   const handleSubmit = async (e) => {
     e.preventDefault();
     await api.patch(`${baseURL}/tutorials/${id}`, {
@@ -124,7 +120,7 @@ const EditTutorial = () => {
     navigate("/tutorials");
   };
 
-  // Hook para habilitar/deshabilitar el botón de añadir
+  // Habilitar botón si hay título, categoría y contenido
   useEffect(() => {
     if (title && category && content) {
       setIsButtonDisabled(false);
@@ -137,12 +133,11 @@ const EditTutorial = () => {
     return <Typography>Cargando...</Typography>;
   }
   useEffect(() => {
-  if (categories.length && category) {
-    const found = categories.find((cat) => cat._id === category);
-    if (found) setType(found.type);
-  }
-}, [categories, category]);
-
+    if (categories.length && category) {
+      const found = categories.find((cat) => cat._id === category);
+      if (found) setType(found.type);
+    }
+  }, [categories, category]);
 
   return (
     <Container maxWidth="lg" className="add-tutorial-container">
@@ -162,7 +157,6 @@ const EditTutorial = () => {
                 imageUploadHandler: async (file) => {
                   const formData = new FormData();
                   formData.append("image", file);
-
                   try {
                     const response = await api.post(
                       `${baseURL}/upload`,
@@ -173,7 +167,6 @@ const EditTutorial = () => {
                         },
                       }
                     );
-
                     const imageUrl = response.data.imageUrl;
                     return imageUrl;
                   } catch (error) {

@@ -38,17 +38,18 @@ const EditExercise = () => {
   const { id } = useParams(); // Obtener el ID del ejercicio de la URL
   const baseURL = process.env.REACT_APP_API_URL;
 
-  // Función para convertir un índice a una letra
+  // Convierte índice a letra (a, b, c, d)
   const indexToLetter = (index) => {
     const letters = "abcd";
     return letters[index];
   };
 
+  // Al cambiar el tipo, resetear la categoría
   useEffect(() => {
     setCategory("");
   }, [type]);
 
-  // Hook para cargar las categorías y el ejercicio al inicial el componente
+  // Cargar categorías disponibles
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -58,11 +59,10 @@ const EditExercise = () => {
         console.error("Error fetching categories:", error);
       }
     };
-
     fetchCategories();
   }, [baseURL]);
 
-  // Hook para cargar el ejercicio al inicial el componente
+  // Cargar ejercicio existente al iniciar el componente
   useEffect(() => {
     const fetchExercise = async () => {
       try {
@@ -82,10 +82,10 @@ const EditExercise = () => {
         console.error("Error fetching exercise:", error);
       }
     };
-
     fetchExercise();
   }, [baseURL, id]);
 
+  // Cuando se tienen categorías y categoría, precargar el tipo correspondiente
   useEffect(() => {
     if (categories.length && category) {
       const found = categories.find((cat) => cat._id === category);
@@ -93,7 +93,7 @@ const EditExercise = () => {
     }
   }, [categories, category]);
 
-  // Función para enviar el formulario al servidor
+  // Envío del formulario actualizado
   const handleSubmit = async (e) => {
     e.preventDefault();
     const mappedLevel = level === "Fácil" ? 1 : 2;
@@ -113,7 +113,7 @@ const EditExercise = () => {
     }
   };
 
-  // Función para comprimir y subir las imágenes al servidor
+  // Subir imagen (comprimir antes)
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file && images.length < 4) {
@@ -122,7 +122,6 @@ const EditExercise = () => {
         maxWidthOrHeight: 1920,
         useWebWorker: true,
       };
-
       try {
         const compressedFile = await imageCompression(file, options);
         const reader = new FileReader();
@@ -138,12 +137,12 @@ const EditExercise = () => {
     }
   };
 
-  // Función para eliminar una imagen
+  // Eliminar imagen existente
   const handleImageRemove = (index) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  // Función para validar el formulario
+  // Validar formulario
   const isFormValid = () => {
     return (
       problem &&
