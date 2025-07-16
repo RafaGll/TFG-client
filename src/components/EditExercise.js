@@ -17,9 +17,10 @@ import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import imageCompression from "browser-image-compression";
 import "../styles/ExerciseDetails.css";
 
-// Componente principal 
+// Componente principal
 const EditExercise = () => {
   const [problem, setProblem] = useState("");
+  const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [level, setLevel] = useState("");
@@ -43,7 +44,7 @@ const EditExercise = () => {
     return letters[index];
   };
 
-  // Hook para cargar las categorías y el ejercicio al inicial el componente
+  // Hook para cargar las categorías disponibles
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -57,7 +58,7 @@ const EditExercise = () => {
     fetchCategories();
   }, [baseURL]);
 
-  // Hook para cargar el ejercicio al inicial el componente
+  // Hook para cargar el ejercicio al inicializar el componente
   useEffect(() => {
     const fetchExercise = async () => {
       try {
@@ -65,6 +66,7 @@ const EditExercise = () => {
         const exercise = response.data;
         setProblem(exercise.problem);
         setCategory(exercise.category._id);
+        setType(exercise.category.type);
         setLevel(exercise.level === 1 ? "Fácil" : "Difícil");
         setImages(exercise.images);
         setCorrectAnswer(exercise.answers.correct);
@@ -161,18 +163,36 @@ const EditExercise = () => {
           />
           <TextField
             select
+            label="Tipo"
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value);
+              setCategory("");
+            }}
+            fullWidth
+            margin="normal"
+            required
+          >
+            <MenuItem value="Algoritmo">Algoritmo</MenuItem>
+            <MenuItem value="Estructura de datos">Estructura de datos</MenuItem>
+          </TextField>
+          <TextField
+            select
             label="Categoría"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
             required
+            disabled={!type}
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat._id} value={cat._id}>
-                {cat.name}
-              </MenuItem>
-            ))}
+            {categories
+              .filter((cat) => cat.type === type)
+              .map((cat) => (
+                <MenuItem key={cat._id} value={cat._id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
           </TextField>
           <TextField
             select
