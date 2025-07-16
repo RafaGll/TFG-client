@@ -129,15 +129,15 @@ const EditTutorial = () => {
     }
   }, [title, category, content]);
 
-  if (isLoading) {
-    return <Typography>Cargando...</Typography>;
-  }
   useEffect(() => {
     if (categories.length && category) {
       const found = categories.find((cat) => cat._id === category);
       if (found) setType(found.type);
     }
   }, [categories, category]);
+  if (isLoading) {
+    return <Typography>Cargando...</Typography>;
+  }
 
   return (
     <Container maxWidth="lg" className="add-tutorial-container">
