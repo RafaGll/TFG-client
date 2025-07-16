@@ -50,7 +50,6 @@ export default function App() {
 }
 `.trim();
 
-// Configuración de Sandpack para el editor de código
 const simpleSandpackConfig = {
   defaultPreset: "react",
   presets: [
@@ -71,6 +70,7 @@ const simpleSandpackConfig = {
 const EditTutorial = () => {
   const { id } = useParams();
   const [title, setTitle] = useState("");
+  const [type, setType] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [content, setContent] = useState("");
@@ -79,7 +79,12 @@ const EditTutorial = () => {
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
 
-  // Hook para cargar el tutorial y las categorías al inicial el componente
+  // Reset de categoría al cambiar el tipo
+  useEffect(() => {
+    setCategory("");
+  }, [type]);
+
+  // Cargar tutorial y categorías al iniciar
   useEffect(() => {
     const fetchTutorial = async () => {
       try {
@@ -92,8 +97,6 @@ const EditTutorial = () => {
         console.error("Error fetching tutorial:", error);
       }
     };
-
-    // Función para obtener todas las categorías del backend
     const fetchCategories = async () => {
       try {
         const response = await api.get(`${baseURL}/categories`);
@@ -102,12 +105,11 @@ const EditTutorial = () => {
         console.error("Error fetching categories:", error);
       }
     };
-
     fetchTutorial();
     fetchCategories();
   }, [id, baseURL]);
 
-  // Función para enviar el formulario al servidor
+  // Envío del formulario actualizado
   const handleSubmit = async (e) => {
     e.preventDefault();
     await api.patch(`${baseURL}/tutorials/${id}`, {
@@ -118,7 +120,7 @@ const EditTutorial = () => {
     navigate("/tutorials");
   };
 
-  // Hook para habilitar/deshabilitar el botón de añadir
+  // Habilitar botón si hay título, categoría y contenido
   useEffect(() => {
     if (title && category && content) {
       setIsButtonDisabled(false);
@@ -127,6 +129,12 @@ const EditTutorial = () => {
     }
   }, [title, category, content]);
 
+  useEffect(() => {
+    if (categories.length && category) {
+      const found = categories.find((cat) => cat._id === category);
+      if (found) setType(found.type);
+    }
+  }, [categories, category]);
   if (isLoading) {
     return <Typography>Cargando...</Typography>;
   }
@@ -135,7 +143,11 @@ const EditTutorial = () => {
     <Container maxWidth="lg" className="add-tutorial-container">
       <Paper elevation={3} className="add-tutorial-paper">
         <hr></hr>
-        <Box className="add-tutorial-editor" marginBottom={"-20px"} marginTop={"-20px"}>
+        <Box
+          className="add-tutorial-editor"
+          marginBottom={"-20px"}
+          marginTop={"-20px"}
+        >
           <MDXEditor
             markdown={content}
             onChange={setContent}
@@ -145,7 +157,6 @@ const EditTutorial = () => {
                 imageUploadHandler: async (file) => {
                   const formData = new FormData();
                   formData.append("image", file);
-
                   try {
                     const response = await api.post(
                       `${baseURL}/upload`,
@@ -156,7 +167,6 @@ const EditTutorial = () => {
                         },
                       }
                     );
-
                     const imageUrl = response.data.imageUrl;
                     return imageUrl;
                   } catch (error) {
@@ -208,7 +218,7 @@ const EditTutorial = () => {
           />
         </Box>
         <hr></hr>
-          <Box className="info-tutorial">
+        <Box className="info-tutorial">
           <TextField
             label="Título"
             value={title}
@@ -218,17 +228,31 @@ const EditTutorial = () => {
           />
           <TextField
             select
+            label="Tipo"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            fullWidth
+            margin="normal"
+          >
+            <MenuItem value="Estructura de datos">Estructura de datos</MenuItem>
+            <MenuItem value="Algoritmo">Algoritmo</MenuItem>
+          </TextField>
+          <TextField
+            select
             label="Categoría"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
+            disabled={!type}
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat._id} value={cat._id}>
-                {cat.name}
-              </MenuItem>
-            ))}
+            {categories
+              .filter((cat) => cat.type === type)
+              .map((cat) => (
+                <MenuItem key={cat._id} value={cat._id}>
+                  {cat.name}
+                </MenuItem>
+              ))}
           </TextField>
         </Box>
 
