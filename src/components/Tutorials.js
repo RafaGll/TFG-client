@@ -312,7 +312,7 @@ const Tutorials = () => {
           </Box>
         ) : (
           <Typography variant="h5" style={{ color: "#888888" }}>
-            Select a tutorial to view its content
+            Selecciona el tutorial deseado para comenzar a aprender.
           </Typography>
         )}
       </Box>
