@@ -64,7 +64,7 @@ const EditExercise = () => {
         const response = await api.get(`${baseURL}/exercises/${id}`);
         const exercise = response.data;
         setProblem(exercise.problem);
-        setCategory(exercise.category);
+        setCategory(exercise.category.id);
         setLevel(exercise.level === 1 ? "Fácil" : "Difícil");
         setImages(exercise.images);
         setCorrectAnswer(exercise.answers.correct);
