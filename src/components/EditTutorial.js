@@ -71,6 +71,7 @@ const simpleSandpackConfig = {
 const EditTutorial = () => {
   const { id } = useParams();
   const [title, setTitle] = useState("");
+  const [type, setType] = useState(""); // Nuevo estado para el tipo
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [content, setContent] = useState("");
@@ -79,7 +80,7 @@ const EditTutorial = () => {
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_API_URL;
 
-  // Hook para cargar el tutorial y las categorías al inicial el componente
+  // Hook para cargar el tutorial y las categorías al iniciar el componente
   useEffect(() => {
     const fetchTutorial = async () => {
       try {
@@ -107,6 +108,26 @@ const EditTutorial = () => {
     fetchCategories();
   }, [id, baseURL]);
 
+  // Establecer el tipo inicial basado en la categoría cuando se cargan categorías y tutorial
+  useEffect(() => {
+    if (category && categories.length && !type) {
+      const selectedCat = categories.find((cat) => cat._id === category);
+      if (selectedCat) {
+        setType(selectedCat.type);
+      }
+    }
+  }, [category, categories, type]);
+
+  // Restablecer la categoría cuando cambia el tipo
+  useEffect(() => {
+    if (type && category) {
+      const selectedCat = categories.find((cat) => cat._id === category);
+      if (selectedCat && selectedCat.type !== type) {
+        setCategory("");
+      }
+    }
+  }, [type, category, categories]);
+
   // Función para enviar el formulario al servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -118,14 +139,14 @@ const EditTutorial = () => {
     navigate("/tutorials");
   };
 
-  // Hook para habilitar/deshabilitar el botón de añadir
+  // Hook para habilitar/deshabilitar el botón de guardar
   useEffect(() => {
-    if (title && category && content) {
+    if (title && type && category && content) {
       setIsButtonDisabled(false);
     } else {
       setIsButtonDisabled(true);
     }
-  }, [title, category, content]);
+  }, [title, type, category, content]);
 
   if (isLoading) {
     return <Typography>Cargando...</Typography>;
@@ -135,7 +156,11 @@ const EditTutorial = () => {
     <Container maxWidth="lg" className="add-tutorial-container">
       <Paper elevation={3} className="add-tutorial-paper">
         <hr></hr>
-        <Box className="add-tutorial-editor" marginBottom={"-20px"} marginTop={"-20px"}>
+        <Box
+          className="add-tutorial-editor"
+          marginBottom={"-20px"}
+          marginTop={"-20px"}
+        >
           <MDXEditor
             markdown={content}
             onChange={setContent}
@@ -208,7 +233,7 @@ const EditTutorial = () => {
           />
         </Box>
         <hr></hr>
-          <Box className="info-tutorial">
+        <Box className="info-tutorial">
           <TextField
             label="Título"
             value={title}
@@ -216,6 +241,18 @@ const EditTutorial = () => {
             fullWidth
             margin="normal"
           />
+          {/* Nuevo campo para seleccionar el tipo */}
+          <TextField
+            select
+            label="Tipo"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            fullWidth
+            margin="normal"
+          >
+            <MenuItem value="Estructura de datos">Estructura de datos</MenuItem>
+            <MenuItem value="Algoritmo">Algoritmo</MenuItem>
+          </TextField>
           <TextField
             select
             label="Categoría"
@@ -223,12 +260,21 @@ const EditTutorial = () => {
             onChange={(e) => setCategory(e.target.value)}
             fullWidth
             margin="normal"
+            disabled={!type} // Deshabilita el campo si no se ha seleccionado un tipo
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat._id} value={cat._id}>
-                {cat.name}
+            {type ? (
+              categories
+                .filter((cat) => cat.type === type)
+                .map((cat) => (
+                  <MenuItem key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </MenuItem>
+                ))
+            ) : (
+              <MenuItem disabled value="">
+                Primero seleccione un tipo
               </MenuItem>
-            ))}
+            )}
           </TextField>
         </Box>
 
