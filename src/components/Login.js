@@ -103,7 +103,7 @@ function Login() {
                     );
                     loginWithGoogle(credentialResponse.credential);
 
-                    navigate("/exercises");
+                    navigate("/");
                   }}
                   onError={() =>
                     console.error("Error al autenticar con Google")
